@@ -2,7 +2,7 @@ name: Terraform vSphere Provision
 
 on:
   push:
-    branches: [ main ]
+    branches: [ matin ]
   pull_request:
 
 jobs:
