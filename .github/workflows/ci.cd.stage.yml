@@ -1,3 +1,5 @@
+
+
 name: Terraform vSphere Provision
 
 on:
@@ -25,22 +27,34 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Cache Terraform providers
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.terraform.d/plugin-cache
+            .terraform
+          key: terraform-${{ runner.os }}-${{ hashFiles('**/*.tf') }}
+          restore-keys: |
+            terraform-${{ runner.os }}-
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.12.0
-          
+
+      - name: Enable Terraform Plugin Cache
+        run: |
+          mkdir -p ~/.terraform.d/plugin-cache
+          echo 'plugin_cache_dir = "${HOME}/.terraform.d/plugin-cache"' > ~/.terraformrc
+
       - name: Fix Terraform formatting
         run: terraform fmt -recursive
-        
+
       - name: Terraform Init
         run: terraform init
-        
+
       - name: Check Terraform format
         run: terraform fmt -check -recursive
-        
-      - name: Terraform Format Check
-        run: terraform fmt -check
 
       - name: Terraform Validate
         run: terraform validate
@@ -51,3 +65,10 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve
+
+      - name: Backup Terraform State
+        if: github.ref == 'refs/heads/main'
+        run: |
+          mkdir -p backup
+          cp terraform.tfstate backup/terraform.tfstate.backup
+          echo "✅ Backup succeeded: terraform.tfstate copied to backup/"
