@@ -17,7 +17,8 @@ CI/CD pipeline is integrated using **GitHub Actions** to ensure safe, repeatable
 
 ## 🗂️ Project Structure
 
-terraform-vsphere-ubuntu/
+terraform-vsphere-ubuntu
+```
 ├── main.tf # VM creation logic
 ├── provider.tf # vSphere provider config
 ├── variables.tf # Input variables
@@ -25,7 +26,7 @@ terraform-vsphere-ubuntu/
 └── .github/
        └─-- workflows/
                └──  terraform-vsphere.yml # CI/CD workflow
-
+```
 ---
 
 ## 🔧 Prerequisites
