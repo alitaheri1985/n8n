@@ -29,7 +29,10 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.12.0
-
+          
+      - name: Fix Terraform formatting
+        run: terraform fmt -recursive
+        
       - name: Terraform Init
         run: terraform init
         
