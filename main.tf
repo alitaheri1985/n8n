@@ -1,3 +1,5 @@
+
+
 data "vsphere_datacenter" "dc" {
   name = var.datacenter
 }
@@ -22,8 +24,8 @@ data "vsphere_virtual_machine" "template" {
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
-resource "vsphere_virtual_machine" "ubuntu_vm" {
-  count            = 3
+resource "vsphere_virtual_machine" "worker_vm" {
+  count            = 1
   name             = "matin-worker-${count.index + 1}"
   resource_pool_id = data.vsphere_host.host.resource_pool_id
   datastore_id     = data.vsphere_datastore.datastore.id
@@ -68,9 +70,9 @@ resource "vsphere_virtual_machine" "ubuntu_vm" {
 
 
 
-resource "vsphere_virtual_machine" "ubuntu_vm" {
-  count            = 3
-  name             = "mati-worker-${count.index + 4}"
+resource "vsphere_virtual_machine" "master_vm" {
+  count            = 1
+  name             = "matin-master-${count.index + 1}"
   resource_pool_id = data.vsphere_host.host.resource_pool_id
   datastore_id     = data.vsphere_datastore.datastore.id
 
@@ -111,4 +113,3 @@ resource "vsphere_virtual_machine" "ubuntu_vm" {
     }
   }
 }
-
