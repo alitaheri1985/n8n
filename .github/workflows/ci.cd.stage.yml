@@ -58,10 +58,10 @@ jobs:
 
       - name: Terraform Validate
         run: terraform validate
-
+        timeout-minutes: 2
       - name: Terraform Plan
         run: terraform plan
-
+        timeout-minutes: 5
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve
@@ -69,6 +69,13 @@ jobs:
       - name: Backup Terraform State
         if: github.ref == 'refs/heads/main'
         run: |
+          set -e
           mkdir -p backup
+          if [ ! -f terraform.tfstate ]; then
+            echo "❌ terraform.tfstate not found!"
+            exit 1
+          fi
           cp terraform.tfstate backup/terraform.tfstate.backup
           echo "✅ Backup succeeded: terraform.tfstate copied to backup/"
+
+
