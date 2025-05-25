@@ -28,11 +28,14 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.7.5
+          terraform_version: 1.12.0
 
       - name: Terraform Init
         run: terraform init
-
+        
+      - name: Check Terraform format
+        run: terraform fmt -check -recursive
+        
       - name: Terraform Format Check
         run: terraform fmt -check
 
