@@ -100,10 +100,11 @@ runcmd:
 
 ```
 
-##🔧 Configuration Variables (variables.tf)
+## 🔧 Configuration Variables (variables.tf)
 
 All customizable settings are in variables.tf:
-##🖥️ vSphere Connection
+
+## 🖥️ vSphere Connection
 Variable	Description
 vsphere_server	vCenter address
 vsphere_user	vSphere username
@@ -113,27 +114,30 @@ vsphere_host	ESXi hostname/IP
 vsphere_datastore	VM datastore
 vsphere_network	Network name
 vm_template	Template name
-##🧠 VM Configuration
+
+## 🧠 VM Configuration
 Variable	Description	Default
 master_vm_config	Count, CPU, RAM, disk, name prefix	3x (2 vCPU, 4GB RAM)
 worker_vm_config	Count, CPU, RAM, disk, name prefix	3x (4 vCPU, 8GB RAM)
 vm_guest_id	OS type (usually ubuntu64Guest)	ubuntu64Guest
 vm_folder	VM folder in vCenter (optional)	""
 vm_domain	Domain for FQDN (e.g., local)	"local"
-##🌐 Network Settings
+
+## 🌐 Network Settings
 Variable	Description
 vm_ipv4_gateway	Default gateway
 vm_ipv4_netmask	Network mask (CIDR e.g., 24)
 vm_dns_servers	List of DNS servers
 master_ips	Static IPs for master nodes
 worker_ips	Static IPs for worker nodes
-##🔐 Access & Time
+
+## 🔐 Access & Time
 Variable	Description
 vm_ssh_password	Hashed password (openssl passwd)
 vm_ssh_public_key_path	Path to SSH public key file
 vm_ntp_server	NTP server address
-##⚙️ Usage
 
+## ⚙️ Usage
     Clone the repository:
     bash
 
@@ -154,15 +158,16 @@ vsphere_password = "YourSecurePassword"
 Run Terraform:
 bash
 
+```
     terraform init    # Initialize
     terraform plan    # Preview changes
     terraform apply   # Apply configuration
-
-📤 Outputs
+```
+## 📤 Outputs
 
 After execution, the following information is displayed:
 json
-
+```
 all_vm_info = {
   masters = {
     "master-1" = {
@@ -182,14 +187,17 @@ all_vm_info = {
   }
 }
 
-📝 Important Notes
+```
+## 📝 Important Notes
 
     Always use a Ubuntu Cloud Image template that supports cloud-init
 
     Generate hashed passwords using:
     bash
-
+    
+```
 openssl passwd -6 "YourPassword"
+```
 
 Do NOT commit terraform.tfvars to version control (included in .gitignore)
 
