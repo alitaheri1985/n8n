@@ -1,10 +1,27 @@
 locals {
-  cloud_init_rendered = templatefile("${path.module}/cloud-init.yml.tpl", {
-    root_password_hash = var.vm_ssh_password
-    hostname           = "test"
-    domain            = var.vm_domain
+  cloud_init_masters = [
+    for idx in range(var.master_vm_config.count) : templatefile("${path.module}/cloud-init.yml.tpl", {
+      root_password_hash = var.vm_ssh_password
+      hostname           = "${var.master_vm_config.name}-${idx + 1}"
+      domain             = var.vm_domain
+      ip_address         = var.master_ips[idx]
+      gateway            = var.vm_ipv4_gateway
+      netmask            = var.vm_ipv4_netmask
+      dns_servers        = join(", ", var.vm_dns_servers)
+    })
+  ]
 
-  })
+  cloud_init_workers = [
+    for idx in range(var.worker_vm_config.count) : templatefile("${path.module}/cloud-init.yml.tpl", {
+      root_password_hash = var.vm_ssh_password
+      hostname           = "${var.worker_vm_config.name}-${idx + 1}"
+      domain             = var.vm_domain
+      ip_address         = var.worker_ips[idx]
+      gateway            = var.vm_ipv4_gateway
+      netmask            = var.vm_ipv4_netmask
+      dns_servers        = join(", ", var.vm_dns_servers)
+    })
+  ]
 }
 
 provider "vsphere" {
@@ -53,7 +70,7 @@ resource "vsphere_virtual_machine" "master" {
 
   vapp {
     properties = {
-      user-data = base64encode(local.cloud_init_rendered)
+      user-data = base64encode(local.cloud_init_masters[count.index])
     }
   }
 
@@ -102,8 +119,7 @@ resource "vsphere_virtual_machine" "worker" {
 
   vapp {
     properties = {
-      "password" = "123"
-      user-data = base64encode(local.cloud_init_rendered)
+      user-data = base64encode(local.cloud_init_workers[count.index])
     }
   }
 
