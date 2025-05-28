@@ -1,63 +1,62 @@
 # Terraform vSphere VM Provisioning with Cloud-Init
 
-This project provisions **virtual machines (VMs)** on a **VMware vSphere** environment using **Terraform** and **cloud-init**. Configuration is delivered via `vapp.properties` to support dynamic VM setup at boot time — no ISO needed.
+This project provisions **virtual machines (VMs)** in a **VMware vSphere** environment using **Terraform** and **cloud-init**. Configuration is dynamically delivered through `vapp.properties` at boot time - no ISO required.
 
 ---
 
 ## 📁 Project Structure
-```
+
 .
-├── .gitignore # Ignores local state and Terraform cache files
+├── .gitignore # Temporary files like state and cache
 ├── .terraform.lock.hcl # Terraform dependency lock file
 ├── README.md # Project documentation
-├── cloud-init.yml.tpl # Cloud-init template file
-├── data.tf # Data sources (vSphere template, network, etc.)
+├── cloud-init.yml.tpl # Cloud-init template
+├── data.tf # Data sources (template, network, etc.)
 ├── main.tf # Main provisioning logic
 ├── outputs.tf # Terraform outputs
-├── variables.tf # All input variables
+├── variables.tf # Input variables
 ├── terraform.tfvars # User-defined variable values
-├── versions.tf # Provider and Terraform version constraints
-```
+├── versions.tf # Terraform version constraints
+
 
 ---
 
-## 🚀 Features
+## 🚀 Key Features
 
-- Provision **multiple VMs** (masters and workers)
-- Use **cloud-init** to configure each machine
-- Assign **static IPs** and hostname automatically
+- Provision **multiple VMs** (master and worker nodes)
+- Use **cloud-init** for automatic configuration
+- Assign **static IPs** and hostnames automatically
 - Inject **SSH keys** and hashed root password
 - Full support for **vSphere vApp properties**
-- Automatically attach to selected network/datastore/template
-- Compatible with **Ubuntu cloud images**
+- Automatic connection to selected network/datastore/template
+- Compatible with **Ubuntu Cloud Images**
 
 ---
 
 ## ☁️ What is Cloud-Init?
 
-**Cloud-init** is the standard way to configure cloud VMs at boot time. It supports:
+**Cloud-init** is the standard for configuring virtual machines at boot time. Capabilities include:
 
 - Setting hostnames
 - Creating users
 - Installing SSH keys
-- Configuring networking
-- Updating packages
+- Network configuration
+- Package updates
 - Running commands at first boot
 
-### 🔧 How It Works Here
+### 🔧 How It Works in This Project
 
-- A `cloud-init.yml.tpl` template is rendered dynamically using `templatefile()`.
-- Terraform injects real values (e.g., hostname, IP, SSH key) into it.
-- The rendered file is **base64-encoded** and sent to the VM through `vapp.properties.user-data`.
-- No need for ISO images or cloud drives. Cloud-init runs automatically at VM boot.
+1. The `cloud-init.yml.tpl` file is dynamically rendered using `templatefile()`
+2. Terraform injects actual values (hostname, IP, SSH key)
+3. The final file is **base64-encoded** and sent to the VM via `vapp.properties.user-data`
+4. Cloud-init runs automatically at VM boot without ISO or cloud drive
 
-✅ **This makes provisioning fully automated.**
+✅ **This makes provisioning fully automated**
 
 ---
 
-## 🧠 Example Rendered Cloud-Init
-
-```
+## 🧠 Example Cloud-Init Output
+```yaml
 #cloud-config
 hostname: master-1
 fqdn: master-1.local
@@ -66,7 +65,7 @@ users:
   - name: ahmad
     sudo: ALL=(ALL) NOPASSWD:ALL
     lock_passwd: false
-    passwd: $6$rounds=4096$h...  # Hashed root password
+    passwd: $6$rounds=4096$h...  # Hashed password
     ssh_authorized_keys:
       - ssh-rsa AAAAB3... user@host
     ssh_pwauth: true
@@ -94,60 +93,69 @@ write_files:
                 via: 192.168.10.1
             nameservers:
               addresses: [8.8.8.8, 1.1.1.1]
-```
 runcmd:
-```
   - sudo netplan apply
-```
+
 🔧 Configuration Variables (variables.tf)
 
-All user-configurable settings live in variables.tf. Here's a quick overview:
+All customizable settings are in variables.tf:
 🖥️ vSphere Connection
-```
 Variable	Description
-vsphere_server	vCenter hostname or IP
+vsphere_server	vCenter address
 vsphere_user	vSphere username
 vsphere_password	vSphere password (sensitive)
 vsphere_datacenter	Datacenter name
-vsphere_host	ESXi host name or IP
-vsphere_datastore	Datastore for VMs
+vsphere_host	ESXi hostname/IP
+vsphere_datastore	VM datastore
 vsphere_network	Network name
-vm_template	Template name to clone
-🧠 Master/Worker VM Config
+vm_template	Template name
+🧠 VM Configuration
 Variable	Description	Default
-master_vm_config	Count, CPU, RAM, disk, name prefix	3 x 2 vCPU, 4GB RAM
-worker_vm_config	Count, CPU, RAM, disk, name prefix	3 x 4 vCPU, 8GB RAM
-vm_guest_id	Guest OS type (usually ubuntu64Guest)	ubuntu64Guest
-vm_folder	Optional VM folder in vCenter	""
-vm_domain	Domain used for FQDN (e.g. local)	"local"
+master_vm_config	Count, CPU, RAM, disk, name prefix	3x (2 vCPU, 4GB RAM)
+worker_vm_config	Count, CPU, RAM, disk, name prefix	3x (4 vCPU, 8GB RAM)
+vm_guest_id	OS type (usually ubuntu64Guest)	ubuntu64Guest
+vm_folder	VM folder in vCenter (optional)	""
+vm_domain	Domain for FQDN (e.g., local)	"local"
 🌐 Network Settings
 Variable	Description
 vm_ipv4_gateway	Default gateway
-vm_ipv4_netmask	Netmask in CIDR (e.g., 24)
+vm_ipv4_netmask	Network mask (CIDR e.g., 24)
 vm_dns_servers	List of DNS servers
 master_ips	Static IPs for master nodes
 worker_ips	Static IPs for worker nodes
 🔐 Access & Time
 Variable	Description
-vm_ssh_password	Hashed root password (openssl passwd)
-vm_ssh_public_key_path	Path to public SSH key file
+vm_ssh_password	Hashed password (openssl passwd)
+vm_ssh_public_key_path	Path to SSH public key file
 vm_ntp_server	NTP server address
 ⚙️ Usage
-```
-    Clone this repository
 
-    Create and fill terraform.tfvars with your values
+    Clone the repository:
+    bash
 
-    Initialize and apply Terraform:
-```
-terraform init
-terraform plan
-terraform apply
-```
+git clone https://github.com/your-repo/vsphere-terraform-cloudinit.git
+cd vsphere-terraform-cloudinit
+
+Create terraform.tfvars with your values:
+hcl
+
+vsphere_server = "vcenter.example.com"
+vsphere_user = "admin@vsphere.local"
+vsphere_password = "YourSecurePassword"
+# ... other variables
+
+Run Terraform:
+bash
+
+    terraform init    # Initialize
+    terraform plan    # Preview changes
+    terraform apply   # Apply configuration
+
 📤 Outputs
 
-Outputs include all VMs and their specifications:
-```
+After execution, the following information is displayed:
+json
+
 all_vm_info = {
   masters = {
     "master-1" = {
@@ -166,4 +174,18 @@ all_vm_info = {
     }
   }
 }
-```
+
+📝 Important Notes
+
+    Always use a Ubuntu Cloud Image template that supports cloud-init
+
+    Generate hashed passwords using:
+    bash
+
+openssl passwd -6 "YourPassword"
+
+Do NOT commit terraform.tfvars to version control (included in .gitignore)
+
+Modify cloud-init.yml.tpl to change cloud-init configuration
+
+Ensure network interface names (e.g., ens192) match your template
