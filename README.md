@@ -1,4 +1,4 @@
- Terraform vSphere VM Provisioning with Cloud-Init
+Terraform vSphere VM Provisioning with Cloud-Init
 
 This project provisions **virtual machines (VMs)** in a **VMware vSphere** environment using **Terraform** and **cloud-init**. Configuration is dynamically delivered through vapp.properties at boot time - no ISO required.
 
@@ -16,8 +16,7 @@ This project provisions **virtual machines (VMs)** in a **VMware vSphere** envir
 
 ## 📁 Project Structure
 
-‍‍‍```
-
+```
 ├── .gitignore # Temporary files (state, cache)
 ├── .terraform.lock.hcl # Dependency lock file
 ├── README.md # Project documentation
