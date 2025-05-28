@@ -129,8 +129,9 @@ vm_ssh_public_key_path	SSH public key path
 vm_ntp_server	NTP server address
 
 ## ⚙️ Usage
-bash
 ```
+bash
+
 git clone https://github.com/your-repo/vsphere-terraform-cloudinit.git
 cd vsphere-terraform-cloudinit
 ```
