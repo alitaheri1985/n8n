@@ -4,8 +4,6 @@ This project provisions **virtual machines (VMs)** in a **VMware vSphere** envir
 
 ⚠️ **Critical Warnings and Best Practices**  
 - **Backup state files**: This file updates automatically. Deletion may disrupt infrastructure state  
-- **Secure sensitive values**: Store secrets in `terraform.tfvars` or GitHub Secrets - never commit them  
-- **Protect state files**: Never share `.tfstate` files in public repositories  
 - **Use remote state**: For team environments, implement remote state with locking  
 - **Case sensitivity**: All Terraform files and references are case-sensitive  
 - **Repository hygiene**: Keep provider versions updated in `versions.tf`  
@@ -50,7 +48,8 @@ This project provisions **virtual machines (VMs)** in a **VMware vSphere** envir
 4. Cloud-init executes automatically at first boot  
 
 ✅ **Provisioning fully automated - no ISOs required**
-
+- **Static IP conflicts**: When using static IPs, configure through cloud-init NOT vSphere customization
+- 
 ---
 
 ## 🧠 Example Cloud-Init Config
@@ -146,6 +145,11 @@ master_ips = ["192.168.10.10", "192.168.10.11"]
 worker_ips = ["192.168.10.20", "192.168.10.21"]
 EOF
 ```
+
+- **Secure sensitive values**: Store secrets in `terraform.tfvars` or GitHub Secrets - never commit them  
+- **Protect state files**: Never share `.tfstate` files in public repositories 
+- **Quoting requirements**: Wrap non-variable values in `" "`
+- 
 # Execute Terraform
 ```
 terraform init
