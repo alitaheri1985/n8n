@@ -8,6 +8,7 @@ locals {
       gateway            = var.vm_ipv4_gateway
       netmask            = var.vm_ipv4_netmask
       dns_servers        = join(", ", var.vm_dns_servers)
+      ssh_key = file(var.vm_ssh_public_key_path)
     })
   ]
 
@@ -20,6 +21,7 @@ locals {
       gateway            = var.vm_ipv4_gateway
       netmask            = var.vm_ipv4_netmask
       dns_servers        = join(", ", var.vm_dns_servers)
+      ssh_key = file(var.vm_ssh_public_key_path)
     })
   ]
 }
@@ -75,8 +77,7 @@ resource "vsphere_virtual_machine" "master" {
   }
 
   # Wait for the VM to be ready
-  wait_for_guest_net_timeout = 0
-  wait_for_guest_ip_timeout  = 0
+  wait_for_guest_net_timeout = 300
 }
 
 # Worker VMs
@@ -124,6 +125,5 @@ resource "vsphere_virtual_machine" "worker" {
   }
 
   # Wait for the VM to be ready
-  wait_for_guest_net_timeout = 0
-  wait_for_guest_ip_timeout  = 0
+  wait_for_guest_net_timeout = 300
 }

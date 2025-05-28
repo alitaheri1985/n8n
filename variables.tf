@@ -132,3 +132,8 @@ variable "vm_ntp_server" {
   type        = string
   default     = "time.google.com"
 }
+
+variable "vm_ssh_public_key_path" {
+  description = "Path to SSH public key file for connecting to VMs"
+  type        = string
+}
