@@ -5,7 +5,7 @@ This project provisions **virtual machines (VMs)** on a **VMware vSphere** envir
 ---
 
 ## 📁 Project Structure
-
+```
 .
 ├── .gitignore # Ignores local state and Terraform cache files
 ├── .terraform.lock.hcl # Terraform dependency lock file
@@ -17,7 +17,7 @@ This project provisions **virtual machines (VMs)** on a **VMware vSphere** envir
 ├── variables.tf # All input variables
 ├── terraform.tfvars # User-defined variable values
 ├── versions.tf # Provider and Terraform version constraints
-
+```
 
 ---
 
@@ -57,7 +57,7 @@ This project provisions **virtual machines (VMs)** on a **VMware vSphere** envir
 
 ## 🧠 Example Rendered Cloud-Init
 
-```yaml
+```
 #cloud-config
 hostname: master-1
 fqdn: master-1.local
@@ -94,14 +94,16 @@ write_files:
                 via: 192.168.10.1
             nameservers:
               addresses: [8.8.8.8, 1.1.1.1]
-
+```
 runcmd:
+```
   - sudo netplan apply
-
+```
 🔧 Configuration Variables (variables.tf)
 
 All user-configurable settings live in variables.tf. Here's a quick overview:
 🖥️ vSphere Connection
+```
 Variable	Description
 vsphere_server	vCenter hostname or IP
 vsphere_user	vSphere username
@@ -131,21 +133,21 @@ vm_ssh_password	Hashed root password (openssl passwd)
 vm_ssh_public_key_path	Path to public SSH key file
 vm_ntp_server	NTP server address
 ⚙️ Usage
-
+```
     Clone this repository
 
     Create and fill terraform.tfvars with your values
 
     Initialize and apply Terraform:
-
+```
 terraform init
 terraform plan
 terraform apply
-
+```
 📤 Outputs
 
 Outputs include all VMs and their specifications:
-
+```
 all_vm_info = {
   masters = {
     "master-1" = {
@@ -164,3 +166,4 @@ all_vm_info = {
     }
   }
 }
+```
