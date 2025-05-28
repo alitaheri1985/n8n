@@ -5,7 +5,7 @@ This project provisions **virtual machines (VMs)** in a **VMware vSphere** envir
 ---
 
 ## 📁 Project Structure
-
+```
 .
 ├── .gitignore # Temporary files like state and cache
 ├── .terraform.lock.hcl # Terraform dependency lock file
@@ -17,7 +17,7 @@ This project provisions **virtual machines (VMs)** in a **VMware vSphere** envir
 ├── variables.tf # Input variables
 ├── terraform.tfvars # User-defined variable values
 ├── versions.tf # Terraform version constraints
-
+```
 
 ---
 
