@@ -127,6 +127,11 @@ variable "vm_ssh_password" {
   type        = string
 }
 
+variable "vm_user_name" {
+  description = "VM User name"
+  type        = string
+}
+
 variable "vm_ntp_server" {
   description = "NTP server address"
   type        = string

@@ -3,6 +3,7 @@ locals {
     for idx in range(var.master_vm_config.count) : templatefile("${path.module}/cloud-init.yml.tpl", {
       root_password_hash = var.vm_ssh_password
       hostname           = "${var.master_vm_config.name}-${idx + 1}"
+      vm_user_name       = var.vm_user_name
       domain             = var.vm_domain
       ip_address         = var.master_ips[idx]
       gateway            = var.vm_ipv4_gateway
@@ -16,6 +17,7 @@ locals {
     for idx in range(var.worker_vm_config.count) : templatefile("${path.module}/cloud-init.yml.tpl", {
       root_password_hash = var.vm_ssh_password
       hostname           = "${var.worker_vm_config.name}-${idx + 1}"
+      vm_user_name       = var.vm_user_name
       domain             = var.vm_domain
       ip_address         = var.worker_ips[idx]
       gateway            = var.vm_ipv4_gateway

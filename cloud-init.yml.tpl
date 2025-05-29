@@ -3,7 +3,7 @@ hostname: ${hostname}
 fqdn: ${hostname}.${domain}
 
 users:
-  - name: ahmad
+  - name: ${vm_user_name}
     sudo: ALL=(ALL) NOPASSWD:ALL
     lock_passwd: false
     passwd: ${root_password_hash}
