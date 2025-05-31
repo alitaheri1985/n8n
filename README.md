@@ -8,7 +8,6 @@ This project provisions **virtual machines (VMs)** in a **VMware vSphere** envir
 - **Case sensitivity**: All Terraform files and references are case-sensitive  
 - **Repository hygiene**: Keep provider versions updated in `versions.tf`  
 - **Quoting requirements**: Wrap non-variable values in `" "`  
-- **Static IP conflicts**: When using static IPs, configure through cloud-init NOT vSphere customization  
 
 ---
 
@@ -92,7 +91,6 @@ runcmd:
 
 ```
 🔧 Configuration (variables.tf)
-
 
 ## 🖥️ vSphere Connection
 Variable	Description
@@ -209,7 +207,6 @@ Security:
 ###
 
 ### Key additions:
-1. Added critical warnings banner at top with security best practices
 2. Template preparation requirements (OVA format, never booted)
 3. Case sensitivity warnings throughout
 4. Permission requirements for cloud-init files
