@@ -219,6 +219,36 @@ Security:
 11. Backup and state management warnings
 12. Quoting requirements for non-variable values
 
+## Variables
+
+Define variables in `variables.tf` or a `.tfvars` file.
+
+| Variable              | Description                           | Type           | Example Value                          |
+|----------------------|---------------------------------------|----------------|----------------------------------------|
+| vsphere_server       | vSphere server FQDN or IP             | string         | `vcenter.example.com`                  |
+| vsphere_user         | vSphere username                      | string         | `administrator@vsphere.local`          |
+| vsphere_password     | vSphere password (sensitive)          | string         | `your-password`                        |
+| vsphere_datacenter   | vSphere datacenter name               | string         | `Datacenter`                           |
+| vsphere_host         | vSphere ESXi host name or IP          | string         | `esxi01.example.com`                   |
+| vsphere_datastore    | vSphere datastore name                | string         | `datastore1`                           |
+| vsphere_network      | vSphere network name                  | string         | `VM Network`                           |
+| vm_template          | VM template name                      | string         | `ubuntu-template`                      |
+| vm_folder            | vSphere folder for VMs                | string         | `k8s-cluster`                          |
+| vm_guest_id          | Guest OS ID                           | string         | `ubuntu64Guest`                        |
+| vm_domain            | Domain name for VMs                   | string         | `example.com`                          |
+| vm_ipv4_gateway      | IPv4 gateway for VMs                  | string         | `192.168.1.1`                          |
+| vm_ipv4_netmask      | IPv4 netmask (CIDR)                   | number         | `24`                                   |
+| vm_dns_servers       | List of DNS servers                   | list(string)   | `["8.8.8.8", "8.8.4.4"]`               |
+| master_ips           | Static IPs for master nodes           | list(string)   | `["192.168.1.10", "192.168.1.11"]`     |
+| worker_ips           | Static IPs for worker nodes           | list(string)   | `["192.168.1.12", "192.168.1.13"]`     |
+| vm_ssh_password      | Hashed SSH password                   | string         | `$6$...`                               |
+| vm_user_name         | VM user name                          | string         | `admin`                                |
+| vm_ssh_public_key_path | Path to SSH public key              | string         | `~/.ssh/id_rsa.pub`                    |
+| vm_ntp_server        | NTP server address                    | string         | `time.google.com`                      |
+| master_vm_config     | Master VM config                      | object         | See below                              |
+| worker_vm_config     | Worker VM config                      | object         | See below                              |
+
+#### Example `master_vm_config` and `worker_vm_config`:
 
 ###
 The warnings are integrated directly into relevant sections rather than at the end, ensuring users see critical information before implementation.
