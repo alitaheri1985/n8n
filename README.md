@@ -129,7 +129,7 @@ vm_ntp_server	NTP server address
 ```
 bash
 
-git clone https://github.com/your-repo/vsphere-terraform-cloudinit.git
+git clone https://github.com/Intellare/intellare-infra
 cd vsphere-terraform-cloudinit
 ```
 # Create terraform.tfvars with your values
