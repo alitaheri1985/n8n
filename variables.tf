@@ -50,36 +50,36 @@ variable "vm_folder" {
 variable "master_vm_config" {
   description = "Master VM configuration"
   type = object({
-    count    = number
-    name     = string
-    cpu      = number
-    memory   = number
-    disk     = number
+    count  = number
+    name   = string
+    cpu    = number
+    memory = number
+    disk   = number
   })
   default = {
-    count    = 3
-    name     = "k8s-master"
-    cpu      = 2
-    memory   = 4096
-    disk     = 50
+    count  = 3
+    name   = "k8s-master"
+    cpu    = 2
+    memory = 4096
+    disk   = 50
   }
 }
 
 variable "worker_vm_config" {
   description = "Worker VM configuration"
   type = object({
-    count    = number
-    name     = string
-    cpu      = number
-    memory   = number
-    disk     = number
+    count  = number
+    name   = string
+    cpu    = number
+    memory = number
+    disk   = number
   })
   default = {
-    count    = 3
-    name     = "k8s-worker"
-    cpu      = 4
-    memory   = 8192
-    disk     = 100
+    count  = 3
+    name   = "k8s-worker"
+    cpu    = 4
+    memory = 8192
+    disk   = 100
   }
 }
 
