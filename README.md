@@ -26,6 +26,14 @@ This project provisions **virtual machines (VMs)** in a **VMware vSphere** envir
 ├── versions.tf # Version constraints
 
 ```
+##   Routing to connect vms
+
+- To access master and worker together we need to implement routing befor deploying machines
+also in the your company's router we should assign the vm's IP range that will create via terraform in router (for example mikrotik)
+1. login to your router via winbox
+2. go to IP > address and select new
+3. add an ip address as vm's gateway in range of vm ip address
+4. in the main.tf file set router ip address as ip4_gateway 
 
 ---
 
