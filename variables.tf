@@ -141,7 +141,7 @@ variable "vm_ntp_server" {
 variable "vm_ssh_public_key_path" {
   description = "Path to SSH public key file for connecting to VMs"
   type        = string
-} 
+}
 
 variable "ssh-public-key" {
   description = "ssh public key"
