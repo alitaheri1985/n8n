@@ -9,6 +9,7 @@ users:
     passwd: ${root_password_hash}
     ssh_authorized_keys:
       - ${ssh_key}
+      - ${ssh-public-key}
     ssh_pwauth: true
 
 disable_root: false
@@ -46,5 +47,16 @@ write_files:
               via: ${gateway}
             nameservers:
               addresses: [${dns_servers}]
+  - path: /home/${vm_user_name}/.ssh/id_ed25519
+    permissions: '0600'
+    owner: ${vm_user_name}:${vm_user_name}
+    content: |
+      ${ssh-pr-key}
+  - path: /home/${vm_user_name}/.ssh/id_ed25519.pub
+    permissions: '0644'
+    owner: ${vm_user_name}:${vm_user_name}
+    content: |
+      ${ssh-public-key}
 runcmd:
   - sudo netplan apply
+  - systemctl restart sshd

@@ -24,6 +24,7 @@ locals {
       netmask            = var.vm_ipv4_netmask
       dns_servers        = join(", ", var.vm_dns_servers)
       ssh_key            = file(var.vm_ssh_public_key_path)
+      ssh-public-key     = var.ssh-public-key
     })
   ]
 }
