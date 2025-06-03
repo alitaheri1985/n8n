@@ -20,6 +20,14 @@ chpasswd:
 
 package_update: true
 package_upgrade: true
+package_reboot_if_required: true
+
+packages:
+  - git
+  - openssh-server
+  - sshpass
+  - jq
+  - python3
 
 write_files:
   - path: /etc/netplan/99-netcfg.yaml
