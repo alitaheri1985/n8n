@@ -9,8 +9,8 @@ locals {
       gateway            = var.vm_ipv4_gateway
       netmask            = var.vm_ipv4_netmask
       dns_servers        = join(", ", var.vm_dns_servers)
-      ssh_public_key     = file(var.ssh_public_key)
-      ssh_private_key    = file(var.ssh_private_key)
+      ssh_public_key     = file(var.ssh_public_key_file)
+      ssh_private_key    = file(var.ssh_private_key_file)
     })
     ]
     , [
@@ -23,7 +23,7 @@ locals {
         gateway            = var.vm_ipv4_gateway
         netmask            = var.vm_ipv4_netmask
         dns_servers        = join(", ", var.vm_dns_servers)
-        ssh_public_key     = file(var.ssh_public_key)
+        ssh_public_key     = file(var.ssh_public_key_file)
         ssh_private_key    = ""
       })
   ])
@@ -38,7 +38,7 @@ locals {
       gateway            = var.vm_ipv4_gateway
       netmask            = var.vm_ipv4_netmask
       dns_servers        = join(", ", var.vm_dns_servers)
-      ssh_public_key     = file(var.ssh_public_key)
+      ssh_public_key     = file(var.ssh_public_key_file)
       ssh_private_key    = ""
     })
   ]

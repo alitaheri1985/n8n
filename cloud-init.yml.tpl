@@ -13,9 +13,9 @@ users:
     ssh_pwauth: true
     groups: users, admin
     home: /home/${vm_user_name}
-disable_root: false
+disable_root: false #TODO
 ssh_pwauth: true
-ssh_authorized_keys: []
+ssh_authorized_keys: [] #TODO: REMOVE
 
 chpasswd:
   expire: false
@@ -31,6 +31,14 @@ packages:
   - jq
   - python3
 write_files:
+  # TODO
+  - path: /home/ubuntu/master.sh
+    permissions: "0755"
+    content: |
+      #!/bin/bash
+      echo "This is a placeholder for master setup script."
+
+      
   - path: /etc/netplan/99-netcfg.yaml
     permissions: "0600"
     content: |
@@ -47,7 +55,7 @@ write_files:
               via: ${gateway}
             nameservers:
               addresses: [${dns_servers}]
-              
+#TODO: add condition for these two files
   - path: /home/${vm_user_name}/.ssh/id_ed25519
     permissions: "0400"
     content: |
@@ -77,21 +85,24 @@ write_files:
 %{ endfor ~}
 %{ endif }
 
+#TODO: just run simple scripts
+#TODO: write two scripts for installing clusters
+
 runcmd:
   - sudo netplan apply
-  - sudo apt update
-  - sudo chown -R ${vm_user_name}:${vm_user_name} /home/ubuntu/
+  - sudo apt update #TODO REMOVE
+  - sudo chown -R ${vm_user_name}:${vm_user_name} /home/ubuntu/ #TODO: set vm_user_name for ubuntu
   - sudo mkdir  /home/${vm_user_name}/.ansible/
   - sudo mkdir  /home/${vm_user_name}/.ansible/tmp
   - sudo chmod 755 /home/${vm_user_name}/.ansible
   - sudo chmod 755 /home/${vm_user_name}/.ansible/tmp
   - sudo chown -R ${vm_user_name}:${vm_user_name} /home/${vm_user_name}/.ansible/tmp
   - sudo systemctl restart sshd
-  - sudo chmod 400 /home/${vm_user_name}/.ssh/id_ed25519 /home/${vm_user_name}/.ssh/id_ed25519.pub
-  - sudo apt -y install software-properties-common
+  - sudo chmod 400 /home/${vm_user_name}/.ssh/id_ed25519 /home/${vm_user_name}/.ssh/id_ed25519.pub #TODO REMOVE THIS
+  - sudo apt -y install software-properties-common #TODO: why it is needed to be installed in all vms
 
 %{ if hostname == "k8s-master-1" }
-  - sudo apt update
+  - sudo apt update #TODO REMOVE
   - sudo systemctl restart sshd
   - sudo apt install python3-pip git -y
   - sudo apt install python3-apt -y 
@@ -102,5 +113,5 @@ runcmd:
   - git clone https://github.com/kubernetes-sigs/kubespray.git /opt/ansible/kubespray
   - cd /opt/ansible/kubespray
   - sudo pip3 install -r requirements.txt --break-system-packages --timeout 60
-  - sudo ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i /opt/ansible/inventory.ini cluster.yml --become -vvv  --become-user=root >> /home/ubuntu/log.txt 2>&1
+  - sudo ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i /opt/ansible/inventory.ini cluster.yml --become -vvv  --become-user=root >> /home/ubuntu/log.txt 2>&1 #TODO set kubeconfig in master-1
 %{ endif }

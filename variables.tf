@@ -45,7 +45,7 @@ variable "vm_folder" {
   description = "vSphere folder for VMs"
   type        = string
   default     = ""
-}
+} # TODO: delete this
 
 variable "master_vm_config" {
   description = "Master VM configuration"
@@ -89,6 +89,7 @@ variable "vm_domain" {
   default     = "local"
 }
 
+# TODO: check this if this is mandetory
 variable "vm_guest_id" {
   description = "Guest OS ID"
   type        = string
@@ -132,18 +133,19 @@ variable "vm_user_name" {
   type        = string
 }
 
+# TODO DELETE THIS
 variable "vm_ntp_server" {
   description = "NTP server address"
   type        = string
   default     = "time.google.com"
 }
 
-variable "ssh_public_key" {
+variable "ssh_public_key_file" {
   description = "ssh public key"
   type        = string
 }
 
-variable "ssh_private_key" {
+variable "ssh_private_key_file" {
   description = "ssh private key"
   type        = string
 }

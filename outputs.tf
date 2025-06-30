@@ -52,4 +52,3 @@ output "all_vm_info" {
     }
   }
 }
-
