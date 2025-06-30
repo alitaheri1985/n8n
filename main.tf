@@ -1,4 +1,5 @@
 locals {
+  # TODO: merge template files for masters (not using these concat array thing - it's ugly)
   cloud_init_masters = concat([
     templatefile("${path.module}/cloud-init.yml.tpl", {
       root_password_hash = var.vm_ssh_password
@@ -49,9 +50,6 @@ locals {
 
       })
   ])
-
-
-
   cloud_init_workers = [
     for idx in range(var.worker_vm_config.count) : templatefile("${path.module}/cloud-init.yml.tpl", {
       root_password_hash = var.vm_ssh_password
