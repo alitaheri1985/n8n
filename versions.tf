@@ -7,12 +7,12 @@ terraform {
       version = "~> 2.12"
     }
   }
-    cloud { 
-    
-    organization = "Roshana" 
+  cloud {
 
-    workspaces { 
-      name = "kube-infra" 
-    } 
-  } 
+    organization = "Roshana"
+
+    workspaces {
+      name = "kube-infra"
+    }
+  }
 }

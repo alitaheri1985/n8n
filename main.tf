@@ -11,6 +11,17 @@ locals {
       dns_servers        = join(", ", var.vm_dns_servers)
       ssh_public_key     = file(var.ssh_public_key_file)
       ssh_private_key    = file(var.ssh_private_key_file)
+
+      masters_info = {
+        prefix  = var.master_vm_config.name
+        ip_list = var.master_ips
+      }
+
+      workers_info = {
+        prefix  = var.worker_vm_config.name
+        ip_list = var.worker_ips
+      }
+
     })
     ]
     , [
@@ -25,8 +36,21 @@ locals {
         dns_servers        = join(", ", var.vm_dns_servers)
         ssh_public_key     = file(var.ssh_public_key_file)
         ssh_private_key    = ""
+
+        masters_info = {
+          prefix  = var.master_vm_config.name
+          ip_list = var.master_ips
+        }
+
+        workers_info = {
+          prefix  = var.worker_vm_config.name
+          ip_list = var.worker_ips
+        }
+
       })
   ])
+
+
 
   cloud_init_workers = [
     for idx in range(var.worker_vm_config.count) : templatefile("${path.module}/cloud-init.yml.tpl", {
@@ -40,6 +64,16 @@ locals {
       dns_servers        = join(", ", var.vm_dns_servers)
       ssh_public_key     = file(var.ssh_public_key_file)
       ssh_private_key    = ""
+      masters_info = {
+        prefix  = var.master_vm_config.name
+        ip_list = var.master_ips
+      }
+
+      workers_info = {
+        prefix  = var.worker_vm_config.name
+        ip_list = var.worker_ips
+      }
+
     })
   ]
 }
