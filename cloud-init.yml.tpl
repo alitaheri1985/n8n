@@ -13,9 +13,8 @@ users:
     ssh_pwauth: true
     groups: users, admin
     home: /home/${vm_user_name}
-disable_root: false #TODO
+disable_root: true #TODO  #DONE
 ssh_pwauth: true
-ssh_authorized_keys: [] #TODO: REMOVE
 
 chpasswd:
   expire: false
@@ -31,13 +30,17 @@ packages:
   - jq
   - python3
 write_files:
-  # TODO
+  # TODO #DONE
   - path: /home/ubuntu/master.sh
     permissions: "0755"
     content: |
       #!/bin/bash
       echo "This is a placeholder for master setup script."
 
+  - path: /opt/script1.sh
+    permissions: '0755'
+    content: |
+      ${indent(6, script_content)}
       
   - path: /etc/netplan/99-netcfg.yaml
     permissions: "0600"
@@ -55,16 +58,17 @@ write_files:
               via: ${gateway}
             nameservers:
               addresses: [${dns_servers}]
-#TODO: add condition for these two files
+#TODO: add condition for these two files #DONE
+%{ if hostname == "k8s-master-1" }
   - path: /home/${vm_user_name}/.ssh/id_ed25519
     permissions: "0400"
     content: |
-      ${indent(6, ssh_private_key)}
+      ${indent(6, ssh_private_key)}  
   - path: /home/${vm_user_name}/.ssh/id_ed25519.pub
     permissions: "0400"
     content: |
       ${indent(6, ssh_public_key)}
-
+%{ endif }
 
     
 %{ if hostname == "k8s-master-1" }
@@ -85,33 +89,8 @@ write_files:
 %{ endfor ~}
 %{ endif }
 
-#TODO: just run simple scripts
-#TODO: write two scripts for installing clusters
+#TODO: just run simple scripts DONE
+#TODO: write two scripts for installing clusters DONE
 
 runcmd:
-  - sudo netplan apply
-  - sudo apt update #TODO REMOVE
-  - sudo chown -R ${vm_user_name}:${vm_user_name} /home/ubuntu/ #TODO: set vm_user_name for ubuntu
-  - sudo mkdir  /home/${vm_user_name}/.ansible/
-  - sudo mkdir  /home/${vm_user_name}/.ansible/tmp
-  - sudo chmod 755 /home/${vm_user_name}/.ansible
-  - sudo chmod 755 /home/${vm_user_name}/.ansible/tmp
-  - sudo chown -R ${vm_user_name}:${vm_user_name} /home/${vm_user_name}/.ansible/tmp
-  - sudo systemctl restart sshd
-  - sudo chmod 400 /home/${vm_user_name}/.ssh/id_ed25519 /home/${vm_user_name}/.ssh/id_ed25519.pub #TODO REMOVE THIS
-  - sudo apt -y install software-properties-common #TODO: why it is needed to be installed in all vms
-
-%{ if hostname == "k8s-master-1" }
-  - sudo apt update #TODO REMOVE
-  - sudo systemctl restart sshd
-  - sudo apt install python3-pip git -y
-  - sudo apt install python3-apt -y 
-  - sudo add-apt-repository -y ppa:ansible/ansible --timeout 60
-  - sudo pip3 install ansible-core==2.16.4 --break-system-packages --timeout 60
-  - sudo chown -R ${vm_user_name}:${vm_user_name} /opt/ansible
-  - sudo chmod 400 /home/${vm_user_name}/.ssh/id_ed25519 /home/${vm_user_name}/.ssh/id_ed25519.pub
-  - git clone https://github.com/kubernetes-sigs/kubespray.git /opt/ansible/kubespray
-  - cd /opt/ansible/kubespray
-  - sudo pip3 install -r requirements.txt --break-system-packages --timeout 60
-  - sudo ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i /opt/ansible/inventory.ini cluster.yml --become -vvv  --become-user=root >> /home/ubuntu/log.txt 2>&1 #TODO set kubeconfig in master-1
-%{ endif }
+ - sudo /opt/script1.sh

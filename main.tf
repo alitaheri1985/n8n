@@ -12,6 +12,7 @@ locals {
       dns_servers        = join(", ", var.vm_dns_servers)
       ssh_public_key     = file(var.ssh_public_key_file)
       ssh_private_key    = file(var.ssh_private_key_file)
+      script_content = file("${path.module}/script1.sh")
 
       masters_info = {
         prefix  = var.master_vm_config.name
