@@ -149,3 +149,8 @@ variable "ssh_private_key_file" {
   description = "ssh private key"
   type        = string
 }
+
+variable "script_content" {
+  description = "Content of the script to be executed on VMs"
+  type        = string
+}

@@ -1,7 +1,6 @@
 #cloud-config
 hostname: ${hostname}
 fqdn: ${hostname}.${domain}
-
 users:
   - name: ${vm_user_name}
     sudo: ALL=(ALL) NOPASSWD:ALL
@@ -40,7 +39,7 @@ write_files:
   - path: /opt/script1.sh
     permissions: '0755'
     content: |
-      ${indent(6, script_content)}
+      ${indent(6, script)}
       
   - path: /etc/netplan/99-netcfg.yaml
     permissions: "0600"
