@@ -15,6 +15,8 @@ users:
 disable_root: true #TODO  #DONE
 ssh_pwauth: true
 
+disable_root: true 
+ssh_pwauth: true
 chpasswd:
   expire: false
 
@@ -30,12 +32,6 @@ packages:
   - python3
 write_files:
   # TODO #DONE
-  - path: /home/ubuntu/master.sh
-    permissions: "0755"
-    content: |
-      #!/bin/bash
-      echo "This is a placeholder for master setup script."
-
   - path: /opt/script1.sh
     permissions: '0755'
     content: |
@@ -68,8 +64,6 @@ write_files:
     content: |
       ${indent(6, ssh_public_key)}
 %{ endif }
-
-    
 %{ if hostname == "k8s-master-1" }
   - path: /opt/ansible/inventory.ini
     permissions: '0644'

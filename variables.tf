@@ -40,12 +40,6 @@ variable "vm_template" {
   type        = string
 }
 
-# VM configuration variables
-variable "vm_folder" {
-  description = "vSphere folder for VMs"
-  type        = string
-  default     = ""
-} # TODO: delete this
 
 variable "master_vm_config" {
   description = "Master VM configuration"
@@ -89,7 +83,6 @@ variable "vm_domain" {
   default     = "local"
 }
 
-# TODO: check this if this is mandetory
 variable "vm_guest_id" {
   description = "Guest OS ID"
   type        = string
