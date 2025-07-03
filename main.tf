@@ -1,5 +1,4 @@
 locals {
-  # TODO: merge template files for masters (not using these concat array thing - it's ugly)
   cloud_init_masters = concat([
     templatefile("${path.module}/cloud-init.yml.tpl", {
       root_password_hash = var.vm_ssh_password

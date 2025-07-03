@@ -31,7 +31,8 @@ packages:
   - jq
   - python3
 write_files:
-  - path: /opt/script1.sh
+
+  - path: /home/${vm_user_name}/script1.sh
     permissions: '0755'
     content: |
       ${indent(6, script)}
@@ -69,7 +70,7 @@ write_files:
     content: |
       [kube_control_plane]
 %{ for index, addr in masters_info.ip_list ~}
-      ${masters_info.prefix}-${index + 1} ansible_host=${addr} ansible_ssh_user=ubuntu etcd_member_name=etcd${index + 1} ansible_ssh_private_key_file=/home/ubuntu/.ssh/id_ed25519 ansible_remote_tmp=/home/ubuntu/.ansible/tmp
+      ${masters_info.prefix}-${index + 1} ansible_host=${addr} ansible_ssh_user=ubuntu etcd_member_name=etcd${index + 1} ansible_ssh_private_key_file=/home/ubuntu/.ssh/id_ed25519 ansible_remote_tmp=/home/ubuntu/.ansible/tmp kubeconfig_localhost=true
 %{ endfor ~}
 
       [etcd:children]
@@ -85,4 +86,7 @@ write_files:
 #TODO: write two scripts for installing clusters DONE
 
 runcmd:
- - sudo /opt/script1.sh
+- sudo netplan apply
+- sudo sed -i "s/vm_user_name/ubuntu/g" /home/${vm_user_name}/script1.sh
+- sudo /home/${vm_user_name}/script1.sh
+- sudo ./script1.sh > /home/${vm_user_name}/script1.log 2>&1
