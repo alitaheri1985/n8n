@@ -21,6 +21,5 @@ if [hostname == "k8s-master-1"];then
   git clone https://github.com/kubernetes-sigs/kubespray.git /opt/ansible/kubespray
   cd /opt/ansible/kubespray
   sudo pip3 install -r requirements.txt --break-system-packages --timeout 60
-  sudo ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i /opt/ansible/inventory.ini cluster.yml --become -vvv  --become-user=root >> /home/ubuntu/log.txt 2>&1
-  sudo export KUBECONFIG=/etc/kubernetes/admin.conf
+  sudo ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i /opt/ansible/inventory.ini cluster.yml --become -vvv  --become-user=root >> /home/ubuntu/log.txt 2>&1 && export KUBECONFIG=/etc/kubernetes/admin.conf
 fi

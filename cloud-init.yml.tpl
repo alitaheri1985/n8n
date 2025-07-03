@@ -31,7 +31,6 @@ packages:
   - jq
   - python3
 write_files:
-  # TODO #DONE
   - path: /opt/script1.sh
     permissions: '0755'
     content: |
