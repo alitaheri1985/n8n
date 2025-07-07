@@ -1,6 +1,6 @@
 locals {
   cloud_init_masters = [
-      for idx in range(var.master_vm_config.count) : templatefile("${path.module}/cloud-init.yml.tpl", {
+      for idx in range(var.master_vm_config.count) : templatefile("${path.module}/data/cloud-init.yml.tpl", {
         root_password_hash = var.vm_ssh_password
         hostname           = "${var.master_vm_config.name}-${idx + 1}"
         vm_user_name       = var.vm_user_name
@@ -27,7 +27,7 @@ locals {
       })
   ]
   cloud_init_workers = [
-    for idx in range(var.worker_vm_config.count) : templatefile("${path.module}/cloud-init.yml.tpl", {
+    for idx in range(var.worker_vm_config.count) : templatefile("${path.module}/data/cloud-init.yml.tpl", {
       root_password_hash = var.vm_ssh_password
       hostname           = "${var.worker_vm_config.name}-${idx + 1}"
       vm_user_name       = var.vm_user_name
@@ -66,7 +66,6 @@ resource "vsphere_virtual_machine" "master" {
   name             = "${var.master_vm_config.name}-${count.index + 1}"
   resource_pool_id = data.vsphere_host.host.resource_pool_id
   datastore_id     = data.vsphere_datastore.datastore.id
-  folder           = var.vm_folder
 
   num_cpus  = var.master_vm_config.cpu
   memory    = var.master_vm_config.memory
@@ -113,7 +112,6 @@ resource "vsphere_virtual_machine" "worker" {
   name             = "${var.worker_vm_config.name}-${count.index + 1}"
   resource_pool_id = data.vsphere_host.host.resource_pool_id
   datastore_id     = data.vsphere_datastore.datastore.id
-  folder           = var.vm_folder
 
   num_cpus  = var.worker_vm_config.cpu
   memory    = var.worker_vm_config.memory

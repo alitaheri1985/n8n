@@ -40,7 +40,6 @@ variable "vm_template" {
   type        = string
 }
 
-
 variable "master_vm_config" {
   description = "Master VM configuration"
   type = object({
@@ -126,13 +125,6 @@ variable "vm_user_name" {
   type        = string
 }
 
-# TODO DELETE THIS
-variable "vm_ntp_server" {
-  description = "NTP server address"
-  type        = string
-  default     = "time.google.com"
-}
-
 variable "ssh_public_key_file" {
   description = "ssh public key"
   type        = string
@@ -143,7 +135,7 @@ variable "ssh_private_key_file" {
   type        = string
 }
 
-variable "script_content" {
+variable "cluster_script_content" {
   description = "Content of the script to be executed on VMs"
   type        = string
 }

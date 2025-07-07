@@ -12,7 +12,7 @@ users:
     ssh_pwauth: true
     groups: users, admin
     home: /home/${vm_user_name}
-disable_root: true #TODO  #DONE
+disable_root: true
 ssh_pwauth: true
 
 disable_root: true 
@@ -53,7 +53,6 @@ write_files:
               via: ${gateway}
             nameservers:
               addresses: [${dns_servers}]
-#TODO: add condition for these two files #DONE
 %{ if hostname == "k8s-master-1" }
   - path: /home/${vm_user_name}/.ssh/id_ed25519
     permissions: "0400"
@@ -82,11 +81,9 @@ write_files:
 %{ endfor ~}
 %{ endif }
 
-#TODO: just run simple scripts DONE
-#TODO: write two scripts for installing clusters DONE
 
 runcmd:
 - sudo netplan apply
-- sudo sed -i "s/vm_user_name/ubuntu/g" /home/${vm_user_name}/script1.sh
+- sudo sed -i "s/vm_user_name/${vm_user_name}/g" /home/${vm_user_name}/.sh
 - sudo /home/${vm_user_name}/script1.sh
 - sudo ./script1.sh > /home/${vm_user_name}/script1.log 2>&1
