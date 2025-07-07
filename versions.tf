@@ -3,8 +3,8 @@ terraform {
 
   required_providers {
     vsphere = {
-      source  = "vmware/vsphere" #TODO: change version of vsphare
-      version = ">= 2.13.0"
+      source  = "hashicorp/vsphere" #TODO: change version of vsphare
+      version = ">= 2.12.0"
     }
   }
   cloud {

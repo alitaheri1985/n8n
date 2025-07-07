@@ -11,7 +11,7 @@ locals {
         dns_servers        = join(", ", var.vm_dns_servers)
         ssh_public_key     = file(var.ssh_public_key_file)
         ssh_private_key    = file(var.ssh_private_key_file)
-        script             = file(var.script_content)
+        script             = file(var.cluster_script_content)
 
 
         masters_info = {
@@ -38,7 +38,7 @@ locals {
       dns_servers        = join(", ", var.vm_dns_servers)
       ssh_public_key     = file(var.ssh_public_key_file)
       ssh_private_key    = ""
-      script             = file(var.script_content)
+      script             = file(var.cluster_script_content)
 
       masters_info = {
         prefix  = var.master_vm_config.name
