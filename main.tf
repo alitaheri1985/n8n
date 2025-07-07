@@ -1,32 +1,6 @@
 locals {
-  cloud_init_masters = concat([
-    templatefile("${path.module}/cloud-init.yml.tpl", {
-      root_password_hash = var.vm_ssh_password
-      hostname           = "${var.master_vm_config.name}-1"
-      vm_user_name       = var.vm_user_name
-      domain             = var.vm_domain
-      ip_address         = var.master_ips[0]
-      gateway            = var.vm_ipv4_gateway
-      netmask            = var.vm_ipv4_netmask
-      dns_servers        = join(", ", var.vm_dns_servers)
-      ssh_public_key     = file(var.ssh_public_key_file)
-      ssh_private_key    = file(var.ssh_private_key_file)
-      script             = file(var.script_content)
-
-      masters_info = {
-        prefix  = var.master_vm_config.name
-        ip_list = var.master_ips
-      }
-
-      workers_info = {
-        prefix  = var.worker_vm_config.name
-        ip_list = var.worker_ips
-      }
-
-    })
-    ]
-    , [
-      for idx in range(1, var.master_vm_config.count) : templatefile("${path.module}/cloud-init.yml.tpl", {
+  cloud_init_masters = [
+      for idx in range(var.master_vm_config.count) : templatefile("${path.module}/cloud-init.yml.tpl", {
         root_password_hash = var.vm_ssh_password
         hostname           = "${var.master_vm_config.name}-${idx + 1}"
         vm_user_name       = var.vm_user_name
@@ -36,7 +10,7 @@ locals {
         netmask            = var.vm_ipv4_netmask
         dns_servers        = join(", ", var.vm_dns_servers)
         ssh_public_key     = file(var.ssh_public_key_file)
-        ssh_private_key    = ""
+        ssh_private_key    = file(var.ssh_private_key_file)
         script             = file(var.script_content)
 
 
@@ -51,7 +25,7 @@ locals {
         }
 
       })
-  ])
+  ]
   cloud_init_workers = [
     for idx in range(var.worker_vm_config.count) : templatefile("${path.module}/cloud-init.yml.tpl", {
       root_password_hash = var.vm_ssh_password
