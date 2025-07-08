@@ -84,6 +84,6 @@ write_files:
 
 runcmd:
 - sudo netplan apply
-- sudo sed -i "s/vm_user_name/${vm_user_name}/g" /home/${vm_user_name}/.sh
+- sudo sed -i "s/vm_user_name/${vm_user_name}/g" /home/${vm_user_name}/cluster_init.sh
 - sudo /home/${vm_user_name}/cluster_init.sh
 - sudo ./cluster_init.sh > /home/${vm_user_name}/cluster_init.log 2>&1
