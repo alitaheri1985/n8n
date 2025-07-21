@@ -35,7 +35,6 @@ write_files:
     permissions: '0755'
     content: |
       ${indent(6, script)}
-      
   - path: /etc/netplan/99-netcfg.yaml
     permissions: "0600"
     content: |
@@ -78,6 +77,8 @@ write_files:
 %{ for index, addr in workers_info.ip_list ~}
       ${workers_info.prefix}-${index + 1} ansible_host=${addr} ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/home/ubuntu/.ssh/id_ed25519 ansible_remote_tmp=/home/ubuntu/.ansible/tmp
 %{ endfor ~}
+      [all:vars]
+      kube_network_plugin=cilium
 %{ endif }
 
 
