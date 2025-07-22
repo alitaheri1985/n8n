@@ -73,8 +73,6 @@ write_files:
 %{ for index, addr in workers_info.ip_list ~}
       ${workers_info.prefix}-${index + 1} ansible_host=${addr} ansible_ssh_user=${vm_user_name} ansible_ssh_private_key_file=/home/ubuntu/.ssh/id_ed25519 ansible_remote_tmp=/home/ubuntu/.ansible/tmp
 %{ endfor ~}
-      [all:vars]
-      kube_network_plugin=cilium
 %{ endif }
 
 
