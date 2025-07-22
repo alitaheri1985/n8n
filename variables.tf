@@ -118,6 +118,7 @@ variable "worker_ips" {
 variable "vm_ssh_password" {
   description = "SSH password for root user"
   type        = string
+  sensitive   = true
 }
 
 variable "vm_user_name" {

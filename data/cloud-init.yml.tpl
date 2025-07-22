@@ -11,11 +11,7 @@ users:
     ssh_pwauth: true
     groups: users, admin
     home: /home/${vm_user_name}
-disable_root: true
-ssh_pwauth: true
 
-disable_root: true 
-ssh_pwauth: true
 chpasswd:
   expire: false
 
@@ -54,8 +50,8 @@ write_files:
 %{ if hostname == "k8s-master-1" }
   - path: /home/${vm_user_name}/.ssh/id_ed25519
     permissions: "0400"
-    content: |
-      ${indent(6, ssh_private_key)}  
+    content: | 
+      ${indent(6, ssh_private_key)}
   - path: /home/${vm_user_name}/.ssh/id_ed25519.pub
     permissions: "0400"
     content: |
@@ -66,8 +62,8 @@ write_files:
     permissions: '0644'
     content: |
       [kube_control_plane]
-%{ for index, addr in masters_info.ip_list ~}
-      ${masters_info.prefix}-${index + 1} ansible_host=${addr} ansible_ssh_user=ubuntu etcd_member_name=etcd${index + 1} ansible_ssh_private_key_file=/home/ubuntu/.ssh/id_ed25519 ansible_remote_tmp=/home/ubuntu/.ansible/tmp kubeconfig_localhost=true
+%{ for index, addr in masters_info.ip_list ~}  
+      ${masters_info.prefix}-${index + 1} ansible_host=${addr} ansible_ssh_user=${vm_user_name} etcd_member_name=etcd${index + 1} ansible_ssh_private_key_file=/home/ubuntu/.ssh/id_ed25519 ansible_remote_tmp=/home/ubuntu/.ansible/tmp kubeconfig_localhost=true
 %{ endfor ~}
 
       [etcd:children]
@@ -75,7 +71,7 @@ write_files:
 
       [kube_node]
 %{ for index, addr in workers_info.ip_list ~}
-      ${workers_info.prefix}-${index + 1} ansible_host=${addr} ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/home/ubuntu/.ssh/id_ed25519 ansible_remote_tmp=/home/ubuntu/.ansible/tmp
+      ${workers_info.prefix}-${index + 1} ansible_host=${addr} ansible_ssh_user=${vm_user_name} ansible_ssh_private_key_file=/home/ubuntu/.ssh/id_ed25519 ansible_remote_tmp=/home/ubuntu/.ansible/tmp
 %{ endfor ~}
       [all:vars]
       kube_network_plugin=cilium
