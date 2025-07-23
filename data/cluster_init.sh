@@ -24,5 +24,5 @@ if [ $HOSTNAME = "k8s-master-1" ]; then
   git clone https://github.com/kubernetes-sigs/kubespray.git /opt/ansible/kubespray
   cd /opt/ansible/kubespray
   sudo pip3 install -r requirements.txt --break-system-packages --timeout 60
-  sudo ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook  -i /opt/ansible/inventory.ini cluster.yml -e kube_network_plugin=cilium --become -vvv  --become-user=root >> /home/vm_user_name/log.txt 2>&1
+  sudo ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook  -i /opt/ansible/inventory.ini cluster.yml -e kube_owner=root -e kube_network_plugin=cilium  --become -vvv  --become-user=root >> /home/vm_user_name/log.txt 2>&1
 fi
