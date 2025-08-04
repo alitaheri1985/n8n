@@ -1,0 +1,80 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  labels:
+    app: my-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+        - name: my-app
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          volumeMounts:
+          - name: my-ap
+            mountPath: /usr/share/nginx/html/
+      volumes:
+        - name: my-ap
+          configMap:
+            name: index-html-configmap
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: my-app
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-app-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: test.int.intellare.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: my-app
+                port:
+                  number: 80
+    - host: shirini.int.intellare.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: my-app
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - test.int.intellare.io
+      secretName: my-app-tls
+    - hosts:
+        - shirini.int.intellare.io
+      secretName: shirini-tls

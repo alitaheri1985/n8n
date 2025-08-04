@@ -1,0 +1,443 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: index-html-configmap
+  namespace: default
+data:
+  index.html: |
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Scoops of Joy — Ice Cream Around the World</title>
+        <meta name="description" content="A fun, beautiful, single-file ice-cream page with translations, animations, and a random flavor generator." />
+        <style>
+          :root{
+            --bg:#fff7fb;
+            --card:#ffffff;
+            --text:#2b2b2b;
+            --muted:#6a6a6a;
+            --accent:#ff69b4;        /* bubblegum pink */
+            --accent-2:#7bdaff;      /* sky blue */
+            --accent-3:#ffc857;      /* mango */
+            --accent-4:#b18fff;      /* ube purple */
+            --accent-5:#9be39b;      /* pistachio */
+            --ring: rgba(0,0,0,.06);
+          }
+
+          @media (prefers-color-scheme: dark){
+            :root{
+              --bg:#100e14;
+              --card:#1a1721;
+              --text:#f4f4f5;
+              --muted:#b3b3b3;
+              --ring: rgba(255,255,255,.08);
+            }
+          }
+
+          *{box-sizing:border-box}
+          html,body{margin:0;height:100%}
+          body{
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
+            background: radial-gradient(1200px 800px at 10% -10%, rgba(255,105,180,.18), transparent 60%),
+                        radial-gradient(900px 600px at 110% 20%, rgba(123,218,255,.20), transparent 60%),
+                        radial-gradient(1000px 700px at 50% 110%, rgba(177,143,255,.18), transparent 60%),
+                        var(--bg);
+            color:var(--text);
+            line-height:1.5;
+          }
+
+          header{
+            padding:48px 20px 24px;
+            text-align:center;
+            position:relative;
+            overflow:hidden;
+          }
+
+          .title{
+            font-size:clamp(28px, 5vw, 56px);
+            font-weight:900;
+            letter-spacing:.5px;
+            margin:0;
+            background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-4));
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            filter: drop-shadow(0 2px 0 rgba(0,0,0,.06));
+          }
+          .subtitle{
+            margin:10px auto 0;
+            max-width:720px;
+            color:var(--muted);
+            font-size:clamp(14px, 2.2vw, 18px);
+          }
+
+          /* Hero ice-cream (pure CSS) */
+          .hero{
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            margin:28px auto 8px;
+            gap:28px;
+            flex-wrap:wrap;
+          }
+
+          .cone{
+            width:130px;
+            height:200px;
+            position:relative;
+            filter: drop-shadow(0 10px 18px rgba(0,0,0,.12));
+            animation: floaty 6s ease-in-out infinite;
+          }
+          @keyframes floaty{
+            0%,100%{ transform: translateY(0) rotate(-2deg); }
+            50%{ transform: translateY(-8px) rotate(2deg); }
+          }
+
+          .cone .waffle{
+            position:absolute;
+            bottom:0; left:50%;
+            transform:translateX(-50%);
+            width:0;height:0;
+            border-left:65px solid transparent;
+            border-right:65px solid transparent;
+            border-top:170px solid #d39a63;
+            filter: brightness(1) saturate(1.1);
+            clip-path: polygon(0 100%, 50% 0, 100% 100%);
+          }
+          .cone .grid::before, .cone .grid::after{
+            content:"";
+            position:absolute; inset:0;
+            background:
+              repeating-linear-gradient(45deg, rgba(0,0,0,.06) 0 6px, transparent 6px 12px),
+              repeating-linear-gradient(-45deg, rgba(0,0,0,.06) 0 6px, transparent 6px 12px);
+            mask: linear-gradient(#000 0 0) exclude, linear-gradient(#0000 0 0);
+            pointer-events:none;
+            transform: translateY(-30px);
+          }
+
+          .scoop{
+            position:absolute;
+            left:50%; bottom:150px;
+            transform:translateX(-50%);
+            width:150px;height:110px;
+            background: var(--accent-3);
+            border-radius:80px 80px 60px 60px;
+            box-shadow:
+              inset 0 -10px 0 rgba(0,0,0,.06),
+              0 8px 14px rgba(0,0,0,.12);
+          }
+          .scoop.pink{ background: linear-gradient(#ff9acb, #ff69b4); }
+          .scoop.blue{ background: linear-gradient(#9fe0ff, #7bdaff); }
+          .scoop.green{ background: linear-gradient(#bff1b7, #9be39b); }
+          .scoop.purple{ background: linear-gradient(#c8b6ff, #b18fff); }
+
+          .drip{
+            position:absolute; top:60px; left:18px;
+            width:18px;height:26px; background:inherit;
+            border-bottom-left-radius:14px; border-bottom-right-radius:14px;
+            animation: drip 3.6s ease-in-out infinite;
+          }
+          .drip.d2{ left:auto; right:22px; animation-delay: .8s }
+          .drip.d3{ left:52px; animation-delay: 1.5s }
+
+          @keyframes drip{
+            0%{ transform: translateY(0); height: 26px; opacity:.95 }
+            60%{ transform: translateY(16px); height: 34px; opacity:1 }
+            100%{ transform: translateY(0); height: 26px; opacity:.95 }
+          }
+
+          /* Sprinkle confetti bg */
+          .sprinkles{
+            position:absolute; inset:0; pointer-events:none; overflow:hidden;
+          }
+          .sprinkle{
+            position:absolute; width:8px;height:2px; border-radius:2px;
+            opacity:.8;
+            animation: fall linear infinite;
+          }
+          @keyframes fall{
+            0%{ transform: translateY(-20px) rotate(0deg) }
+            100%{ transform: translateY(120vh) rotate(300deg) }
+          }
+
+          /* Controls */
+          .actions{
+            display:flex; gap:12px; justify-content:center; flex-wrap:wrap;
+            padding:6px 16px 24px;
+          }
+
+          button, .chip{
+            border:0; outline:0; cursor:pointer;
+            background: var(--card);
+            color: var(--text);
+            padding:10px 14px;
+            border-radius:999px;
+            box-shadow:
+              0 1px 0 var(--ring),
+              0 8px 20px rgba(0,0,0,.06);
+            transition: transform .15s ease, box-shadow .15s ease;
+          }
+          button:hover, .chip:hover{ transform: translateY(-2px); box-shadow: 0 2px 0 var(--ring), 0 14px 28px rgba(0,0,0,.10) }
+          button.primary{
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            color:#fff; font-weight:700;
+          }
+
+          /* Flavor chips */
+          .flavors{
+            display:flex; gap:8px; justify-content:center; flex-wrap:wrap;
+            padding:0 16px 6px;
+            max-width:1000px; margin:0 auto;
+          }
+          .chip{ font-size:14px; }
+
+          /* Language grid */
+          .section{
+            padding:28px 16px 60px;
+            max-width:1100px; margin:0 auto;
+          }
+          .section h2{
+            text-align:center; margin:8px 0 18px; font-size:28px;
+          }
+
+          .grid{
+            display:grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap:14px;
+          }
+
+          .card{
+            background: var(--card);
+            border-radius:16px;
+            padding:16px;
+            box-shadow:
+              0 1px 0 var(--ring),
+              0 12px 28px rgba(0,0,0,.06);
+            transition: transform .15s ease, box-shadow .15s ease;
+          }
+          .card:hover{ transform: translateY(-4px); box-shadow: 0 2px 0 var(--ring), 0 18px 36px rgba(0,0,0,.10) }
+
+          .flag{
+            font-size:22px; margin-right:8px;
+          }
+          .lang{
+            display:flex; align-items:center; font-weight:700; margin-bottom:4px;
+          }
+          .term{ color: var(--muted); font-size:14px }
+
+          footer{
+            text-align:center; padding:30px 12px 60px; color:var(--muted); font-size:13px;
+          }
+
+          @media (prefers-reduced-motion: reduce){
+            *{ animation: none !important; transition: none !important }
+            .sprinkles{ display:none }
+          }
+        </style>
+      </head>
+      <body>
+        <header>
+          <h1 class="title">Scoops of Joy</h1>
+          <p class="subtitle">A celebration of ice cream — colorful scoops, silly sprinkles, and how to say it around the world.</p>
+
+          <div class="hero" aria-hidden="true">
+            <div class="cone">
+              <div class="scoop pink">
+                <div class="drip"></div><div class="drip d2"></div><div class="drip d3"></div>
+              </div>
+              <div class="waffle grid"></div>
+            </div>
+            <div class="cone" style="animation-delay:.5s">
+              <div class="scoop blue">
+                <div class="drip"></div><div class="drip d2"></div>
+              </div>
+              <div class="waffle grid"></div>
+            </div>
+            <div class="cone" style="animation-delay:.9s">
+              <div class="scoop purple">
+                <div class="drip"></div>
+              </div>
+              <div class="waffle grid"></div>
+            </div>
+            <div class="cone" style="animation-delay:1.2s">
+              <div class="scoop green">
+                <div class="drip"></div><div class="drip d2"></div>
+              </div>
+              <div class="waffle grid"></div>
+            </div>
+          </div>
+
+          <div class="sprinkles" id="sprinkles" aria-hidden="true"></div>
+
+          <div class="actions">
+            <button class="primary" id="btn-flavor">Random Flavor</button>
+            <button id="btn-sprinkles">More Sprinkles</button>
+          </div>
+
+          <div class="flavors" id="flavors" aria-live="polite"></div>
+        </header>
+
+        <main class="section">
+          <h2>Ice cream in many languages</h2>
+          <div class="grid" id="lang-grid" role="list"></div>
+        </main>
+
+        <footer>
+          Built as a single HTML file. Works offline. Zero dependencies. Enjoy your scoop!
+        </footer>
+
+        <script>
+          // Flavor generator
+          const FLAVORS = [
+            "Classic Vanilla","Double Chocolate Chunk","Strawberry Swirl","Mint Choco Chip","Salted Caramel",
+            "Pistachio","Cookies & Cream","Mango Lassi","Ube (Purple Yam)","Tiramisu",
+            "Matcha","Honey Lavender","Banoffee Pie","Peanut Butter Fudge","Lemon Sorbet",
+            "Cheesecake Ripple","Black Sesame","Coffee Crunch","Blueberry Cheesecake","Coconut",
+            "Raspberry Ripple","Churro Cinnamon","Brownie Batter","Saffron Pistachio","Baklava Crunch",
+            "Rose Milk","Hazelnut Praline","Maple Walnut","Bubblegum","Lychee"
+          ];
+
+          const LANGUAGES = [
+            { flag:"🇬🇧", name:"English",       word:"Ice cream" },
+            { flag:"🇺🇸", name:"American",      word:"Ice cream" },
+            { flag:"🇮🇳", name:"Hindi",         word:"आइसक्रीम (Aiskrim)" },
+            { flag:"🇮🇷", name:"Persian",       word:"بستنی (Bastani)" },
+            { flag:"🇦🇪", name:"Arabic",        word:"آيس كريم (Ays krim)" },
+            { flag:"🇪🇸", name:"Spanish",       word:"Helado" },
+            { flag:"🇮🇹", name:"Italian",       word:"Gelato" },
+            { flag:"🇫🇷", name:"French",        word:"Glace" },
+            { flag:"🇩🇪", name:"German",        word:"Eis" },
+            { flag:"🇵🇹", name:"Portuguese",    word:"Sorvete (BR) / Gelado (PT)" },
+            { flag:"🇷🇺", name:"Russian",       word:"Мороженое (Morozhenoye)" },
+            { flag:"🇯🇵", name:"Japanese",      word:"アイスクリーム (Aisukurīmu)" },
+            { flag:"🇨🇳", name:"Chinese",       word:"冰淇淋 (Bīngqílín)" },
+            { flag:"🇰🇷", name:"Korean",        word:"아이스크림 (Aiseukeurim)" },
+            { flag:"🇹🇷", name:"Turkish",       word:"Dondurma" },
+            { flag:"🇬🇷", name:"Greek",         word:"Παγωτό (Pagotó)" },
+            { flag:"🇵🇱", name:"Polish",        word:"Lody" },
+            { flag:"🇳🇱", name:"Dutch",         word:"IJs" },
+            { flag:"🇸🇪", name:"Swedish",       word:"Glass" },
+            { flag:"🇳🇴", name:"Norwegian",     word:"Iskrem" },
+            { flag:"🇩🇰", name:"Danish",        word:"Is" },
+            { flag:"🇫🇮", name:"Finnish",       word:"Jäätelö" },
+            { flag:"🇨🇿", name:"Czech",         word:"Zmrzlina" },
+            { flag:"🇸🇰", name:"Slovak",        word:"Zmrzlina" },
+            { flag:"🇭🇺", name:"Hungarian",     word:"Fagylalt" },
+            { flag:"🇷🇴", name:"Romanian",      word:"Înghețată" },
+            { flag:"🇧🇬", name:"Bulgarian",     word:"Сладолед (Sladoled)" },
+            { flag:"🇺🇦", name:"Ukrainian",     word:"Морозиво (Morózyvo)" },
+            { flag:"🇷🇸", name:"Serbian",       word:"Сладолед / Sladoled" },
+            { flag:"🇭🇷", name:"Croatian",      word:"Sladoled" },
+            { flag:"🇧🇦", name:"Bosnian",       word:"Sladoled" },
+            { flag:"🇸🇮", name:"Slovenian",     word:"Sladoled" },
+            { flag:"🇮🇱", name:"Hebrew",        word:"גלידה (Glida)" },
+            { flag:"🇮🇩", name:"Indonesian",    word:"Es krim" },
+            { flag:"🇲🇾", name:"Malay",         word:"Aiskrim" },
+            { flag:"🇻🇳", name:"Vietnamese",    word:"Kem" },
+            { flag:"🇹🇭", name:"Thai",          word:"ไอศกรีม (Ai-sa-krim)" },
+            { flag:"🇵🇭", name:"Filipino",      word:"Sorbetes" },
+            { flag:"🇮🇸", name:"Icelandic",     word:"Ís" },
+            { flag:"🇪🇪", name:"Estonian",      word:"Jäätis" },
+            { flag:"🇱🇻", name:"Latvian",       word:"Saldējums" },
+            { flag:"🇱🇹", name:"Lithuanian",    word:"Ledai" },
+            { flag:"🇮🇪", name:"Irish",         word:"Uachtar reoite" },
+            { flag:"🏴",  name:"Scottish Gaelic", word:"Reòiteag" },
+            { flag:"🇵🇪", name:"Quechua",       word:"Ullphaya" },
+            { flag:"🇲🇽", name:"Nahuatl",       word:"Nieve" },
+            { flag:"🇪🇹", name:"Amharic",       word:"የዱቄት አይስክሬም (Aysikiremi)" },
+            { flag:"🇳🇬", name:"Yoruba",        word:"Isekrimu" },
+            { flag:"🇿🇦", name:"Zulu",          word:"Aysikhilimu" }
+          ];
+
+          const grid = document.getElementById("lang-grid");
+          const flavorsEl = document.getElementById("flavors");
+          const btnFlavor = document.getElementById("btn-flavor");
+          const btnSprinkles = document.getElementById("btn-sprinkles");
+          const sprinkles = document.getElementById("sprinkles");
+
+          function sample(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+          function renderLanguages(){
+            grid.innerHTML = "";
+            LANGUAGES.forEach((l) => {
+              const card = document.createElement("div");
+              card.className = "card";
+              card.setAttribute("role","listitem");
+              card.innerHTML = `
+                <div class="lang"><span class="flag">${l.flag}</span>${l.name}</div>
+                <div class="term">${l.word}</div>
+              `;
+              grid.appendChild(card);
+            });
+          }
+
+          function addFlavorChip(text){
+            const chip = document.createElement("span");
+            chip.className = "chip";
+            chip.textContent = "🍨 " + text;
+            chip.style.background = "linear-gradient(90deg, var(--accent-5), var(--accent-3))";
+            chip.style.color = "#1d1d1d";
+            chip.style.fontWeight = "700";
+            flavorsEl.prepend(chip);
+
+            // gentle pop
+            chip.animate([
+              { transform:"scale(.8)", opacity:.0 },
+              { transform:"scale(1.08)", opacity:1, offset:.6 },
+              { transform:"scale(1)", opacity:1 }
+            ], { duration: 420, easing:"cubic-bezier(.2,.8,.2,1)" });
+
+            burstConfetti();
+          }
+
+          function burstConfetti(){
+            // create 24 falling sprinkles at top
+            for(let i=0;i<24;i++){
+              const s = document.createElement("div");
+              s.className = "sprinkle";
+              s.style.background = sample(["var(--accent)","var(--accent-2)","var(--accent-3)","var(--accent-4)","var(--accent-5)"]);
+              const left = Math.random()*100;
+              const delay = Math.random()*0.6;
+              const dur = 1.2 + Math.random()*0.9;
+              s.style.left = left+"vw";
+              s.style.top = "-10px";
+              s.style.transform = "rotate("+(Math.random()*180)+"deg)";
+              s.style.animationDuration = dur+"s";
+              s.style.animationDelay = delay+"s";
+              sprinkles.appendChild(s);
+              // cleanup
+              setTimeout(()=> s.remove(), (delay+dur)*1000+500);
+            }
+          }
+
+          function addAmbientSprinkles(count=40){
+            for(let i=0;i<count;i++){
+              const s = document.createElement("div");
+              s.className = "sprinkle";
+              s.style.background = sample(["var(--accent)","var(--accent-2)","var(--accent-3)","var(--accent-4)","var(--accent-5)"]);
+              const left = Math.random()*100;
+              const delay = Math.random()*6;
+              const dur = 4 + Math.random()*6;
+              s.style.left = left+"vw";
+              s.style.top = (-20 - Math.random()*200) + "px";
+              s.style.transform = "rotate("+(Math.random()*360)+"deg)";
+              s.style.animationDuration = dur+"s";
+              s.style.animationDelay = delay+"s";
+              sprinkles.appendChild(s);
+              // periodic cleanup
+              setTimeout(()=> s.remove(), (delay+dur)*1000+2000);
+            }
+          }
+
+          btnFlavor.addEventListener("click", () => addFlavorChip(sample(FLAVORS)));
+          btnSprinkles.addEventListener("click", () => addAmbientSprinkles(60));
+
+          renderLanguages();
+          addAmbientSprinkles(36);
+        </script>
+      </body>
+      </html>
+
+    
