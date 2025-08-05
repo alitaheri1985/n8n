@@ -1,0 +1,62 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cs-1-6
+  namespace: matin
+  labels:
+    app: cs-1-6
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cs-1-6
+  template:
+    metadata:
+      namespace: matin
+      labels:
+        app: cs-1-6
+    spec:
+      containers:
+        - name: cs-1-6
+          image: kingk0der/counter-strike-1.6:latest
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          ports:
+            - containerPort: 27015
+          env:
+          - name: MAXPLAYERS
+            value: "32"
+          - name: START_MAP
+            value: "de_dust2"
+          - name: SERVER_NAME
+            value: "intellare"
+          - name: START_MONEY
+            value: "16000"
+          - name:  BUY_TIME
+            value: "1.0"
+          - name: FRIENDLY_FIRE
+            value: "0"
+          - name: ADMIN_STEAM
+            value: "0:0:55145187"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cs-1-6
+  namespace: matin
+spec:
+  type: LoadBalancer
+  selector:
+    app: cs-1-6
+  ports:
+    - protocol: UDP
+      name: udp
+      port: 27015
+      targetPort: 27015
