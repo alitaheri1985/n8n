@@ -19,14 +19,14 @@ spec:
     spec:
       containers:
         - name: cs-1-6
-          image: kingk0der/counter-strike-1.6:latest
+          image: cajuclc/cstrike-docker
           resources:
             requests:
-              memory: "1Gi"
+              memory: "2Gi"
               cpu: "250m"
             limits:
-              memory: "1Gi"
-              cpu: "500m"
+              memory: "2Gi"
+              cpu: "1"
           ports:
             - containerPort: 27015
           env:
@@ -44,7 +44,17 @@ spec:
             value: "0"
           - name: ADMIN_STEAM
             value: "0:0:55145187"
-
+          volumeMounts:
+          - name: intellare
+            mountPath: /home/steam/cstrike/cstrike/server.cfg
+            subPath: cs-1-6
+          - name: intellare
+            mountPath: /home/steam/cstrike/cstrike/addons/amxmodx/configs/users.ini
+            subPath: users
+      volumes:
+        - name: intellare
+          configMap:
+            name: intellare
 ---
 apiVersion: v1
 kind: Service
