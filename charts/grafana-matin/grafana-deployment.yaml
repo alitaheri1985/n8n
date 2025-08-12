@@ -1,28 +1,35 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-app
   labels:
-    app: my-app
+    app: grafana
+  name: grafana
+  namespace: matin
 spec:
-  replicas: 1
   selector:
     matchLabels:
-      app: my-app
+      app: grafana
   template:
     metadata:
       labels:
-        app: my-app
+        app: grafana
     spec:
       containers:
-        - name: my-app
-          image: nginx:latest
+        - name: grafana
+          image: grafana/grafana:latest
+          imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 80
-          volumeMounts:
-          - name: my-ap
-            mountPath: /usr/share/nginx/html/
+            - containerPort: 3000
+              name: http-grafana
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
           resources:
             requests:
               cpu: 250m
@@ -30,26 +37,27 @@ spec:
             limits:
               memory: "300Mi"
               cpu: "500m"
-      volumes:
-        - name: my-ap
-          configMap:
-            name: index-html-configmap
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: my-app
+  name: grafana
+  namespace: matin
 spec:
   ports:
-    - port: 80
-      targetPort: 80
+    - port: 3000
+      protocol: TCP
+      targetPort: http-grafana
   selector:
-    app: my-app
+    app: grafana
+  sessionAffinity: None
+  type: LoadBalancer
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: my-app-shirini
+  name: my-app-ingress
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
@@ -58,17 +66,17 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: shirini.int.intellare.io
+    - host: grafana.int.intellare.io
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: my-app
+                name: grafana
                 port:
-                  number: 80
+                  number: 3000
   tls:
     - hosts:
-        - shirini.int.intellare.io
-      secretName: shirini-tls
+        - grafana.int.intellare.io
+      secretName: grafana-tls

@@ -22,11 +22,11 @@ spec:
           image: cajuclc/cstrike-docker
           resources:
             requests:
-              memory: "2Gi"
+              memory: "250Mi"
               cpu: "250m"
             limits:
-              memory: "2Gi"
-              cpu: "1"
+              memory: "300Mi"
+              cpu: "1.5"
           ports:
             - containerPort: 27015
           env:
@@ -66,7 +66,11 @@ spec:
   selector:
     app: cs-1-6
   ports:
-    - protocol: UDP
-      name: udp
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80  
+    - name: game
+      protocol: UDP
       port: 27015
-      targetPort: 27015
+      targetPort: 27015 

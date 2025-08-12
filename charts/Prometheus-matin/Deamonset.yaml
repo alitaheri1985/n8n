@@ -1,0 +1,59 @@
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: node-exporter
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      app: node-exporter
+  template:
+    metadata:
+      labels:
+        app: node-exporter
+    spec:
+      volumes:
+        - name: proc
+          hostPath:
+            path: /proc
+            type: ''
+        - name: sys
+          hostPath:
+            path: /sys
+            type: ''
+        - name: root
+          hostPath:
+            path: /
+            type: ''
+      containers:
+        - name: node-exporter
+          image: prom/node-exporter:latest
+          ports:
+            - hostPort: 9100
+              containerPort: 9100
+              protocol: TCP
+          resources: {}
+          volumeMounts:
+            - name: proc
+              readOnly: true
+              mountPath: /host/proc
+            - name: sys
+              readOnly: true
+              mountPath: /host/sys
+            - name: root
+              readOnly: true
+              mountPath: /host/root
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 0
+  revisionHistoryLimit: 10

@@ -1,0 +1,42 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: prometheus
+rules:
+  - verbs:
+      - get
+      - list
+      - watch
+    apiGroups:
+      - ''
+    resources:
+      - nodes
+      - nodes/proxy
+      - services
+      - endpoints
+      - pods
+  - verbs:
+      - get
+      - list
+      - watch
+    apiGroups:
+      - extensions
+    resources:
+      - ingresses
+  - verbs:
+      - get
+    nonResourceURLs:
+      - /metrics
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: prometheus
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: matin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: prometheus
