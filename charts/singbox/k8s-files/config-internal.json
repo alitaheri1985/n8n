@@ -1,0 +1,27 @@
+{
+  "inbounds": [
+    {
+        "type": "vless",
+        "tag": "vless-in",
+        "listen": "0.0.0.0",
+        "listen_port": 9090,
+        "users": [
+            {
+            "name": "test",
+            "uuid": "bf000d23-0752-40b4-affe-68f7707a9661"
+            }
+        ]
+    }
+  ],
+  "outbounds": [
+    {
+      "type": "direct"
+    }
+  ],
+    "log": {
+    "disabled": false,
+    "level": "info",
+    "output": "stdout",
+    "timestamp": true
+    }
+}

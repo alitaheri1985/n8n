@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: singbox
+  namespace: ali
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: singbox
+  template:
+    metadata:
+      labels:
+        app: singbox
+    spec:
+      containers:
+      - name: singbox
+        image: superng6/singbox:v1.12.0-rc.1
+        ports:
+        - containerPort: 9000
+        - containerPort: 8080
+        args: ["run", "-c", "/etc/singbox/config.json"]
+        volumeMounts:
+          - name: singbox-config
+            mountPath: /etc/singbox/config.json
+            subPath: config.json
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "64Mi"
+          limits:
+            cpu: "100m"
+            memory: "128Mi"
+      volumes:
+      - name: singbox-config
+        configMap:
+          name: singbox-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: singbox
+  namespace: ali
+spec:
+  selector:
+    app: singbox
+  ports:
+  - name: vless
+    protocol: TCP
+    port: 9000
+    targetPort: 9000
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: singbox-cluster
+  namespace: ali
+spec:
+  selector:
+    app: singbox
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
+  type: ClusterIP

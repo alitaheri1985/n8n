@@ -1,0 +1,22 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/sagernet/sing-box
+  pullPolicy: IfNotPresent
+  tag: latest
+
+service:
+  type: NodePort
+  port: 3128
+  nodePort: 31328
+
+config:
+  inbounds:
+    - type: http
+      listen: 0.0.0.0
+      listen_port: 3128
+      sniff: true
+      sniff_override_destination: true
+  outbounds:
+    - type: direct
+

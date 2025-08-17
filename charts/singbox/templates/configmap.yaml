@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "singbox.fullname" . }}-config
+  labels:
+    {{- include "singbox.labels" . | nindent 4 }}
+data:
+  config.json: |-
+    {
+      "inbounds": [
+        {{- range $index, $element := .Values.config.inbounds }}
+        {{- if $index}},{{ end }}
+        {
+          "type": "{{ $element.type }}",
+          "listen": "{{ $element.listen }}",
+          "listen_port": {{ $element.listen_port }},
+          "sniff": {{ $element.sniff }},
+          "sniff_override_destination": {{ $element.sniff_override_destination }}
+        }
+        {{- end }}
+      ],
+      "outbounds": [
+        {{- range $index, $element := .Values.config.outbounds }}
+        {{- if $index}},{{ end }}
+        {
+          "type": "{{ $element.type }}"
+        }
+        {{- end }}
+      ]
+    }
+

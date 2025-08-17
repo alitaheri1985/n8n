@@ -1,0 +1,7 @@
+apiVersion: v2
+name: singbox2
+description: A Helm chart for Sing-box HTTP proxy on Kubernetes
+type: application
+version: 0.1.0
+appVersion: "latest"
+
