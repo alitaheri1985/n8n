@@ -1,36 +1,67 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "singbox.fullname" . }}
-  labels:
-    {{- include "singbox.labels" . | nindent 4 }}
+  name: {{ .values.container.appname }}
+  namespace: {{ .values.container.ns }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "singbox.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      app: {{ .values.container.appname }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "singbox.name" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
+        app: {{ .values.container.appname }}
     spec:
       containers:
-        - name: sing-box
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          args:
-            - run
-            - -C
-            - /etc/sing-box
-          ports:
-            - containerPort: {{ .Values.service.port }}
-          volumeMounts:
-            - name: config-volume
-              mountPath: /etc/sing-box
+      - name: {{ .values.container.appname }}
+        image: {{ .values.container.image }}
+        ports:
+        - containerPort: {{ .values.container.ports.port1 }}
+        - containerPort: {{ .values.container.ports.port2 }}
+        args: {{ .Values.container.args}}
+        volumeMounts:
+          - name: {{ .values.container.config.name }}
+            mountPath: {{ .values.container.vol.path }}
+            subPath: {{ .values.container.vol.subpath }}
+        resources:
+          requests:
+            cpu: {{ .Values.container.resource.cpureq}}
+            memory: {{ .Values.container.resource.memreq}}
+          limits:
+            cpu: {{ .Values.container.resource.cpulimit}}
+            memory: {{ .Values.container.resource.memlimit}}
       volumes:
-        - name: config-volume
-          configMap:
-            name: {{ include "singbox.fullname" . }}-config
-
+      - name: {{ .values.container.config.name }}
+        configMap:
+          name: {{ .values.container.config.name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service.name1 }}
+  namespace: {{ .values.container.ns }}
+spec:
+  selector:
+    app: {{ .values.container.appname }}
+  ports:
+  - name: {{ .Values.service.ports.name1 }}
+    protocol: {{ .Values.service.proto }}
+    port: {{ .values.container.ports.port1 }}
+    targetPort: {{ .values.container.ports.port1 }}
+  type: {{ .values.service.network.type1 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .values.container.appname }}
+  namespace: {{ .values.container.ns }}
+spec:
+  selector:
+    app: {{ .values.container.appname }}
+  ports:
+  - name: {{ .Values.service.ports.name2 }}
+    protocol: {{ .Values.service.proto }}
+    port: {{ .values.container.ports.port2 }}
+    targetPort: {{ .values.container.ports.port2 }}
+  type: {{ .values.service.network.type2 }}

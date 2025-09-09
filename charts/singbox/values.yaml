@@ -1,22 +1,45 @@
-replicaCount: 1
-
-image:
-  repository: ghcr.io/sagernet/sing-box
-  pullPolicy: IfNotPresent
-  tag: latest
-
+replicas: 1
+container:
+  appname: singbox
+  ns: ali
+  image: superng6/singbox:v1.12.0-rc.1
+  ports:
+    port1: 9000
+    port2: 8080
+  config:
+    name: singbox-config
+  vol:
+    path: /etc/singbox/config.json
+    subpath: config.json
+  args: ["run", "-c", "/etc/singbox/config.json"]
+  resource:
+    cpureq: "50m"
+    cpulimit: "100m"
+    memreq: "64Mi"
+    memlimit: "128:Mi"
 service:
-  type: NodePort
-  port: 3128
-  nodePort: 31328
+  ports:
+    name1: vless
+    name2: http
+  name1: singbox-vless
+  name2: singbox-http
+  proto: TCP
+  network:
+    type1: LoadBalancer
+    type2: ClusterIP
 
 config:
-  inbounds:
-    - type: http
-      listen: 0.0.0.0
-      listen_port: 3128
-      sniff: true
-      sniff_override_destination: true
-  outbounds:
-    - type: direct
-
+  in:
+    listen:
+      address1: 0.0.0.0
+    ports:
+      port1: 9000
+      port2: 8080
+    tags:
+      tag1: vless-in
+      tag2: http-in
+  out:
+    type: direct
+    log:
+      disabled: false
+      level: info
