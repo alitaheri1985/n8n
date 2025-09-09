@@ -1,5 +1,0 @@
-# Example1:
-
-
-
-# OUTPUT: 
