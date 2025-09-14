@@ -1,6 +1,0 @@
-apiVersion: v2
-name: singbox
-description: Helm chart for deploying sing-box on Kubernetes
-type: application
-version: 0.1.0
-appVersion: "latest"
