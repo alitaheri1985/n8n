@@ -5,20 +5,27 @@ metadata:
 data:
   config.json: |
     {
-      "log": {
-        "level": "info"
-      },
       "inbounds": [
         {
-          "type": {{ .Values.inbounds.type | quote }},
-          "listen": {{ .Values.inbounds.listen | quote }},
-          "listen_port": {{ .Values.inbounds.listen_port }}
-        }
+          "type": "vless",
+          "listen": "0.0.0.0",
+          "listen_port": 9090
+        },
+        {   
+          "type": "http",
+          "listen": "0.0.0.0",
+          "listen_port": 8080
+        }        
       ],
+      
       "outbounds": [
         {
-          "type": {{ .Values.outbounds.type | quote }}
+          "type": "direct"
         }
-      ]
+      ],
+      "log": {
+        "disabled": false,
+        "level": "info"
+      }
     }
 

@@ -6,8 +6,8 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.inbounds.listen_port }}
+      targetPort: {{ .Values.service.port }}
       protocol: {{ .Values.service.protocol }}
   selector:
-    app: {{ .Release.Name }}
+    {{ .Values.spec.template.metadata.labels }}
 

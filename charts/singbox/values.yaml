@@ -1,56 +1,19 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/sagernet/sing-box
-  tag: "latest"
+  repository: superng6/singbox
+  tag: "v1.12.0-rc.1"
   pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
-  port: 7890
+  port: 9090
   protocol: TCP
 
-inbounds: 
-  type: "vless"
-  listen: "0.0.0.0"
-  listen_port: 9090
+spec:
+  template:
+    metadata:
+      labels:
+        "app: vpn"
 
-outbounds: 
-  type: "direct"
-
-replicas: 1
-container:
-  appname: singbox
-  ns: ali
-  image: superng6/singbox:v1.12.0-rc.1
-  ports:
-    port1: 9000
-    port2: 8080
-  config:
-    name: singbox-config
-  vol:
-    path: /etc/singbox/config.json
-    subpath: config.json
-  args: ["run", "-c", "/etc/singbox/config.json"]
-  resource:
-    cpureq: "50m"
-    cpulimit: "100m"
-    memreq: "64Mi"
-    memlimit: "128:Mi"
-
-config:
-  in:
-    listen:
-      address1: 0.0.0.0
-    ports:
-      port1: 9000
-      port2: 8080
-    tags:
-      tag1: vless-in
-      tag2: http-in
-  out:
-    type: direct
-    log:
-      disabled: false
-      level: info
 

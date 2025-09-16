@@ -6,11 +6,11 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Release.Name }}
+      {{ .Values.spec.template.metadata.labels }}
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}
+        {{ .Values.spec.template.metadata.labels }}
     spec:
       containers:
         - name: singbox
