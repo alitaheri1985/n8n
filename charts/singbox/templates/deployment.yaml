@@ -9,6 +9,8 @@ spec:
       {{- toYaml .Values.labels | nindent 6 }}
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
       labels:
         {{- toYaml .Values.labels | nindent 8 }}
     spec:

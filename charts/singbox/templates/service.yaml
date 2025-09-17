@@ -5,9 +5,9 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{- toYaml .Values.service.port | nindent 12 }}
-      targetPort: {{- toYaml .Values.service.port | nindent 18 }}
-      protocol: {{- toYaml .Values.service.protocol | nindent 16 }}
+    - port: {{- toYaml .Values.service.port | indent 1 }}
+      targetPort: {{- toYaml .Values.service.port | indent 1 }}
+      protocol: {{- toYaml .Values.service.protocol | indent 1 }}
   selector:
     {{- toYaml .Values.labels | nindent 4 }}
 

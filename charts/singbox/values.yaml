@@ -8,7 +8,7 @@ image:
 service:
   type: ClusterIP
   port: 9090
-  protocol: TCP
+  protocol: "TCP"
 
 labels:
   app: "vpn"
@@ -24,4 +24,4 @@ outbounds:
 
 log:
   disabled: False
-  level: "info"
+  level: "debug"
