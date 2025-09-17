@@ -6,11 +6,11 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{ .Values.spec.template.metadata.labels }}
+      {{- toYaml .Values.labels | nindent 6 }}
   template:
     metadata:
       labels:
-        {{ .Values.spec.template.metadata.labels }}
+        {{- toYaml .Values.labels | nindent 8 }}
     spec:
       containers:
         - name: singbox
