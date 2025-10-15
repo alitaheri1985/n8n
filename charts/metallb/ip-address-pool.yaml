@@ -3,7 +3,7 @@ apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
   name: int-external-pool-ip
-  namespace: metallb
+  namespace: metallb-system
 spec:
   avoidBuggyIPs: true
   addresses:
@@ -13,7 +13,7 @@ apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
 metadata:
   name: int-external-advertisement
-  namespace: metallb
+  namespace: metallb-system
 spec:
   ipAddressPools:
   - int-external-pool-ip
