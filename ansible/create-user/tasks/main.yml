@@ -1,0 +1,126 @@
+---
+# tasks file for user_manage
+- name: Update all packages
+  apt:
+    upgrade: dist 
+    update_cache: yes
+  ignore_errors: yes   #if it made error : ignore that
+  register: update_result # Do you want to update it or not 
+  when: update
+- name: Install htop,zsh,net-tools package
+  package:  #package name for install 
+    name: 
+      - htop
+      - zsh
+      - net-tools
+      - openssh-server
+      - ssh
+    state: present #if not this package exist install that
+
+
+
+- name: Create user with admin access
+  user: 
+     name: "{{ user }}" #user value admin 
+     password: "{{ upassword | password_hash('sha512') }}"   #value passwoed and hash that admin
+     groups: sudo #use sudo group
+     append: yes
+     shell: /bin/bash   #default bash
+  when: usercrate
+  ignore_errors: yes
+
+- name: Ensure .ssh directory exists
+  file:
+    path: "/home/{{ user }}/.ssh"
+    state: directory
+    mode: '0700'
+    owner: "{{ user }}"
+    group: "{{ user }}"
+
+- name: Copy SSH key to the remote host
+  ansible.builtin.shell: |
+    sshpass -p '{{ upassword }}' ssh-copy-id -i ~/.ssh/id_rsa.pub -o StrictHostKeyChecking=no {{ user }}@{{ ip }}
+  delegate_to: localhost
+- name: Set permissions for .ssh directory
+  ansible.builtin.file:
+    path: ~/.ssh
+    state: directory
+    mode: '0700'
+
+
+- name: Allow new user to run sudo commands without password
+  ansible.builtin.lineinfile: # This task, set by the user, doesn't need sudo
+    path: /etc/sudoers   
+    regexp: "^{{ user }} ALL=.*"  
+    line: "{{ user }} ALL=(ALL) NOPASSWD: ALL" 
+    state: present
+  when: usercrate
+
+- name: Ensure home directory exists
+  ansible.builtin.file:
+    path: "/home/{{ user }}"  # SET OWNER AND GROUP DIRECTORY {{ USER }}
+    state: directory
+    owner: "{{ user }}"
+    group: "{{ user }}"
+  when: usercrate
+- name: Ensure .ssh directory exists
+  ansible.builtin.file:
+    path: "/home/{{ user }}/.ssh"     # SET OWNER AND GROUP DIRECTORY {{ USER }} WITH .SSH
+    state: directory
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: '0700'
+- name: Expire password for user   # if you want to aftr last login change password uncomment this
+  shell: chage -d 0 "{{ user }}"
+  ignore_errors: yes
+  when: usercrate
+
+- name: Download and execute oh-my-zsh installer , and plugins 
+  shell: |
+    if [ ! -d "/$HOME/{{ user }}/.oh-my-zsh" ]; then    #IF directory .OH-MY-ZSH NOT EXIST INSTALL THIS 
+       git clone https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh   #GET OH-MY-ZSH AND INSTALL 
+      git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+      git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+      git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions
+    fi
+  become: true  #superuser
+  become_user: "{{ user }}"
+  environment: #This task is for the user {{ user }} 
+     HOME: "/home/{{ user }}" 
+     USER: "{{ user }}"
+  ignore_errors: yes
+
+
+
+
+- name: Create or update .zshrc file
+  copy:  # COPY CONFIG .ZSHRC IN {{ USER }} AND SET OWNER AND GROUP  AND OS_FAMILY MEMBER  OF THE DEBIAN 
+    dest: "/home/{{ user }}/.zshrc"
+    content: |
+      export ZSH="$HOME/.oh-my-zsh"
+      export PATH="$HOME/bin:/usr/local/bin:$PATH"
+      alias ll='ls -alF'
+      alias la='ls -A'
+      alias l='ls -CF'
+      ENABLE_CORRECTION="true"
+      export CLICOLOR=1
+      export LSCOLORS=GxFxCxDxBxegedabagaced
+      export PS1="%n@%m %~ %#" 
+      export HISTFILE=~/.zsh_history
+      export HISTSIZE=1000
+      export SAVEHIST=1000
+      export EDITOR='vim'
+      export ZSH_THEME={{zsh_theme}}
+      plugins=( {{ zsh_plugins | join('  ') }} )  
+      source $ZSH/oh-my-zsh.sh
+
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: '0644'
+  when: ansible_facts['os_family'] == "Debian"
+
+
+- name: shell zsh 
+  ansible.builtin.user: # SET BY default ZSH shell
+    name: "{{ user }}"
+    shell: /bin/zsh

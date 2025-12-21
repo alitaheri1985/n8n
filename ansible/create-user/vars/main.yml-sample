@@ -1,0 +1,21 @@
+---
+# vars file for user_manage
+user: "user"  #your user create
+upassword: "123"  #your password 
+assigned_role: "yes" #don`t touch  
+ip: "192.168.1.1" # your ip ssh 
+sshkey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCmnwWOad/JlKS3hsougZqpmd2KXHeuORyZ6ucbtEOzu2ROFgBFfe0X4wsuPCPr82K0xmuO8LHWnruWtEeCclH3Ai46KmGqXXyucGn/Y2SFtyflc0SshdUcJ9ouDRvMKu0eO987DaWGXSS1pz/U8OX2Tz4wC/4BD9XoXOZjXJi5BWeZuB6vRdw6nUOuoIIa8qW9C5r4Dw8SoMSMIjo9h2W26zlG8mv+hnT/pGS98awfYBos+tJQSihYJktLXZkJUgQ+F+nvF07hT9JtBXM/mYDMUQlw5SV7+kiBMckbCcOK+HIJxrEwNHv+r+ppsbJXiC+elbvuvmtlnnKVlVsDxMDH6L3cA4MgwszbSviOR0KFfefLIA51/P9TsTogvcjEqX9zxsB8x0EdWfduUB7vwHO6zwen0AYEvGSd1oV4A1S6Y3n+yUouhoPSc37oGD4MeangIkdc3gE592UItVwM1N0WNo1fgGXD+zPI2dDfe9eRxM4my8u7+NxWktIZaprcx50= root@roshana
+#use yore ssh-key 
+usercrate: true 
+update: false
+
+
+# Default theme for zsh robbyrussell or (af-magic , afowler , agnoster , alanpeabody , amuse , apple , arrow  ) .
+zsh_theme: agnoster  #selecte your theme
+zsh_plugins: # plugins (not work)
+  - git
+  - zsh-autosuggestions
+  - zsh-syntax-highlighting
+  - zsh-completions
+  - history-substring-search
+

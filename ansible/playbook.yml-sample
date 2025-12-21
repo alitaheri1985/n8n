@@ -1,0 +1,7 @@
+---
+# playbook.yml
+- hosts: myservers  #in file inventory.ini 
+  become: yes #root "yes/no"
+  roles:   #any rolse for start ansible 
+    - user_manage
+    - docker

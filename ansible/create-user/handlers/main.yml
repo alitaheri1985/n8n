@@ -1,0 +1,4 @@
+---
+# handlers file for plw
+- name: Reload zsh for user "{{ user }}"
+  shell: sudo -u {{ user }} zsh -l

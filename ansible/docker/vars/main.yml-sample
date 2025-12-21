@@ -1,0 +1,4 @@
+---
+# vars file for docker-ansible
+user: "user"
+upassword: "password"
