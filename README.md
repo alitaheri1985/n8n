@@ -21,6 +21,9 @@ _See [`helm repo`](https://helm.sh/docs/helm/helm_repo/) for command documentati
 
 ## Installing the Chart
 
+before everything you must create a secret.yaml file and replace your passwords,
+then apply it as your secret in your cluster
+
 ```console
 helm install [RELEASE_NAME] community-charts/n8n
 ```
